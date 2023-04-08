@@ -1,0 +1,184 @@
+.button{
+    align-items: center;
+    background-color: #d9e3f2;
+    border: 8px solid transaparent;
+    box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.1), 3px 3px 3px 6px rgba(247, 251, 255, 0.5), 0px 0px 8px 5px rgba(0, 0, 0, 0) inset, 0px 0px 7px 5px rgba(247, 251, 255, 0) inset;
+    color: transparent;
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+    transition: border 0.1s ease, box-shadow 0.1s ease, color 0.1s ease, text-stroke 0.1s ease, -webkit-text-stroke 0.1s ease top ease 0.1s;
+    width: 80%;
+    -webkit-text-stroke: 2.2px #fff; 
+   position: relative;
+    top: 0;
+    transition-property: opcaity, transform;
+    will-change: opcaity, transform;
+}
+
+.row input + .twinSeatAll{
+    background-color: pink;
+}
+
+.button:hover {
+    cursor: pointer;
+    top: -5px;
+}
+
+.button-border {
+  border: 4px solid transparent;
+  border-radius: 14px;
+  background-repeat: no-repeat;
+}
+
+.button-square {
+  height: 32px;
+  width: 80%;
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  justify-content: space-around;
+  width: 55%;
+}
+
+.row input {
+  display: none;
+}
+
+.row input + .button:after{
+    content: "\1F60E";
+}
+
+.row input:checked + .button:after {
+    content: "\2713";
+}
+
+.row input + .twinSeatAll:after{
+    content: "\01F495";
+}
+
+.row input:checked + .button {
+  border: 3px solid #e0ebf5;
+  box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0), -3px -3px 3px 3px rgba(247, 251, 255, 0), 3px 3px 8px 2px rgba(0, 0, 0, 0.1) inset, -3px -3px 7px 2px rgba(247, 251, 255, 0.7) inset;
+  background-color: rgb(105, 172, 56);
+  -webkit-text-stroke: 2.2px #fff;
+  text-stroke: 1px solid #7989A4;
+  -webkit-animation-name: rubberBand;
+  animation-name: rubberBand;
+  animation-duration: 300ms;
+  animation-fill-mode: both;
+}
+
+.row input:checked + .button.button-border {
+  border: 6px solid transparent;
+}
+
+.row input:checked + .twinSeatAll{
+    border: 3px solid #e0ebf5;
+    box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0), -3px -3px 3px 3px rgba(247, 251, 255, 0), 3px 3px 8px 2px rgba(0, 0, 0, 0.1) inset, -3px -3px 7px 2px rgba(247, 251, 255, 0.7) inset;
+    background-color: rgb(105, 172, 56);
+    -webkit-text-stroke: 2.2px #fff;
+    text-stroke: 1px solid #7989A4;
+    -webkit-animation-name: rubberBand;
+    animation-name: rubberBand;
+    animation-duration: 300ms;
+    animation-fill-mode: both;
+}
+
+.row input[type="checkbox"]:disabled + .button{
+    border: 3px solid red;
+    box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0), -3px -3px 3px 3px rgba(247, 251, 255, 0), 3px 3px 8px 2px rgba(0, 0, 0, 0.1) inset, -3px -3px 7px 2px rgba(247, 251, 255, 0.7) inset;
+    background-color: red;
+    cursor: not-allowed;
+    -webkit-text-stroke: 2.2px #fff;
+    text-stroke: 1px solid #7989A4;
+}
+
+.row input[type="checkbox"]:disabled + .button:after {
+    content: '\00D7';
+}
+
+.row input[type="checkbox"]:disabled + .button.button-border {
+  border: 6px solid transparent;
+}
+
+.screen {
+    align-items: center;
+    border-radius: 32px;
+    display: flex;
+    height: 60px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 0;
+}
+
+@-webkit-keyframes rubberBand {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes rubberBand {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+.rubberBand {
+  -webkit-animation-name: rubberBand;
+  animation-name: rubberBand;
+}
