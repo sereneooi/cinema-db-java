@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>CC Cinema</title>
+        <link href="logo.png" rel="icon" type="image/png"/>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+        .dropdown-content a:hover, .dropdown-content li:hover{
+            cursor: pointer;
+        }
+        @font-face {
+        font-family: 'mahelisa';
+        src: url(mahelisa.ttf);
+        }
+        
+          #title{
+            width: 100%;
+            height: 100px;
+        }
+        
+        /*                    
+                    html{
+            background-image: url(background.png);
+        }
+         */
+
+        #promotionV {
+            text-shadow: 2px 2px 2px pink;
+            text-align: center;
+            margin-top: -50px;
+            background: linear-gradient(to bottom, rgb(194, 158, 201), rgb(71, 59, 100));
+            font-family: 'mahelisa';
+            font-size: 40px; 
+            color:rgb(63, 30, 99); 
+            text-align: center; 
+            border-radius: 30px; 
+            line-height: 60px;
+        }
+        
+        body {
+            background-color: rgb(51, 51, 51);
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1020px;
+            min-width: 800px;
+            z-index: -1;
+        }
+       
+       
+        .vtable {
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 50%;
+            height: 100px;
+            margin: 20px auto; 
+        }
+        .vth {
+            font-size: 25px;
+            font-variant: small-caps;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background: radial-gradient(rgb(245, 236, 244) , rgb(197, 98, 222));
+        }
+        .vtd {
+            text-align: center;
+            font-size: 20px;
+            background-color: rgb(245, 238, 242);
+        }
+        
+        h2 {
+            margin-top: 60px;
+            font-size: 30px;
+        }
+        h3 , ul.ultag {
+            text-indent: 50px;
+            font-size: 20px;
+            list-style-position: inside;
+            color: silver;
+        }
+
+        #back {
+            font-size: xx-large;
+            margin: 60px 0px 0px 70px;
+            text-align: center;
+            color: rgb(179, 179, 255);
+            font-size: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            background: linear-gradient(60deg, #000000, #404040, #737373,#999999);
+            padding: 5px 50px;
+            border-radius: 20px;
+            outline: none;
+        }
+        #back:hover {
+            color: white;
+        }
+        #back span{
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+        #back span:after{
+            content: '\00AB';
+            position: absolute;
+            opacity: 0;
+            top: -3%;
+            right: -60px;
+            transition: 0.5s;
+        }
+        #back:hover span{
+            padding-left: 20px;
+        }
+        #back:hover span:after {
+            opacity: 1;
+            right: 60px;
+         }
+    </style>
+    </head>
+    <body>
+        <br/>
+    <br/>
+    <br/>
+        <section id="title" style="width:100%">
+            <h1 id="promotionV">PROMOTION VOUCHER</h1>
+        </section>
+
+        <table class="vtable">
+        <tr>
+            <th class="vth">Movie Ticket Voucher</th>
+        </tr>
+        <tr>
+            <td class="vtd">Voucher Code : AB123, AB234</td>
+        </tr>
+    </table>
+    <table class="vtable">
+        <tr>
+            <th class="vth">Food Voucher</th>
+        </tr>
+        <tr>
+            <td class="vtd">Voucher Code : CC123, CC234</td>
+        </tr>
+        
+    </table>
+        <table class="vtable">
+        <tr>
+            <th class="vth">Participating Location</th>
+        </tr>
+        <tr>
+            <td class="vtd">Aviailable at CC Cinema counter</td>
+        </tr>
+    </table>
+
+    <h3>General Terms & Conditions</h3>
+    <ul class="ultag">
+        <li class="litag">Purchase period of vouchers is until 30 April 2022.</li>
+        <li class="litag">Redemption of vouchers must be made by 31 May 2022.</li>
+        <li class="litag">Each voucher is valid for one time use only.</li>
+    </ul>
+    
+    <section>           
+            <button id="back" onclick="location.href='CustPromotion.jsp'" ><span>Back</span></button>  
+        </section>
+    </body>
+</html>

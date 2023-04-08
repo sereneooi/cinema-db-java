@@ -1,0 +1,281 @@
+
+
+/* Search bar */
+.searchbar {
+    position: absolute;
+    display: block;
+    margin-top: 20px;
+    margin-left: 30px;
+    transform: translate(0%, -50%);
+    background:black;
+    height: 40px;
+    border-radius: 35px;
+    padding: 10px;
+}
+
+.searchbar:hover > .search-txt {
+    width: 300px;
+    padding: 0 6px;
+}
+
+.search-btn {
+    float: right;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.4s;
+    color: white;
+    cursor: pointer;
+}
+
+.search-txt {
+    border: none;
+    background: none;
+    outline: none;
+    float: left;
+    padding: 0;
+    color: white;
+    font-size: 16px;
+    transition: 0.4s;
+    line-height: 40px;
+    width: 0px;
+    font-weight: bold;
+}
+
+.searchcontainer{
+    position: flex;
+    width: 290px;
+    text-align: center;
+    margin-left: 25px;
+    padding: 30px;
+    height: 30px;
+    margin-bottom: 0px;
+}
+
+.searchcontainer ul{
+    list-style: none;
+    width: 100%;
+    background-color: black;
+    padding-left: 0px;
+    margin-top: 0px;
+}
+
+.searchcontainer ul li{
+    background: black;
+    margin-top: 20px;
+    padding: 15px;
+}
+
+.searchcontainer ul li:hover{
+    padding: 15px;
+    background-color: black;
+}
+
+input#search:focus, textarea:focus,
+keygen:focus, select:focus{
+    width: 300px;
+    padding: 0 6px;
+}
+
+/* the first slide show style */
+[type=radio] {
+    display: none;
+}
+
+section.outer{
+    background-color: #454545;
+    width: 99.8%;
+    margin: 0px 0px 0px 0px;
+}
+#slider {
+    height: 25vw;
+    position: relative;
+    perspective: 100000px;
+    transform-style: preserve-3d;
+}
+  
+#slider label {
+    margin: 30px auto;
+    width: 20%;
+    height: 70%;
+    border-radius: 4px;
+    position: absolute;
+    left: 30%; 
+    right: 0;
+    cursor: pointer;
+    transition: transform 0.4s ease;
+}
+
+#s1:checked ~ #slide4, #s2:checked ~ #slide5,
+#s3:checked ~ #slide1, #s4:checked ~ #slide2,
+#s5:checked ~ #slide3 {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.37);
+    opacity: 0.7;
+    transform: translate3d(-100%,20%,-100px);     /* (x, y, z = away or forward from screen) */
+}
+  
+#s1:checked ~ #slide5, #s2:checked ~ #slide1,
+#s3:checked ~ #slide2, #s4:checked ~ #slide3,
+#s5:checked ~ #slide4 {
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,.3), 0 2px 2px 0 rgba(0,0,0,.2);
+    opacity: 0.7;
+    transform: translate3d(-80%,10%,-80px);
+}
+  
+#s1:checked ~ #slide1, #s2:checked ~ #slide2,
+#s3:checked ~ #slide3, #s4:checked ~ #slide4,
+#s5:checked ~ #slide5 {
+    box-shadow: 0 13px 25px 0 rgba(0,0,0,.3), 0 11px 7px 0 rgba(0,0,0,.19);
+    transform: translate3d(0,0,0);
+}
+  
+#s1:checked ~ #slide2, #s2:checked ~ #slide3,
+#s3:checked ~ #slide4, #s4:checked ~ #slide5,
+#s5:checked ~ #slide1 {
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,.3), 0 2px 2px 0 rgba(0,0,0,.2);
+    opacity: 0.7;
+    transform: translate3d(80%,10%,-80px);
+}
+  
+#s1:checked ~ #slide3, #s2:checked ~ #slide4,
+#s3:checked ~ #slide5, #s4:checked ~ #slide1,
+#s5:checked ~ #slide2 {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);
+    opacity: 0.7;
+    transform: translate3d(100%,20%,-100px);
+}
+
+/* first slideshow button */
+.home-container{
+    position: absolute;
+    width: 35%;
+    height: 380px;
+}
+.home-btn{
+    margin: 85% 0px 0px 92px;
+    cursor: pointer;
+    background-color:	 rgb(77, 77, 255);
+    font: 13pt 'Times New Roman', Times, serif;
+    padding: 5px 30px;
+    outline: none;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0px 5px rgba(255, 255, 255, 0.6);
+    transition: 0.4s;
+    opacity: 1;
+}
+.home-btn:hover{
+    background-color:	rgb(128, 128, 255)
+}
+.home-btn:active{
+    transform: translateY(7px);
+    box-shadow: 0px 0px rgba(255, 255, 255, 0.6);
+}
+/* End of first slideshow button */
+
+/* the second slide style */
+section.outer1{
+    position: relative;
+    width: 99.8%;
+    margin: 0px 0px 50px 0px;
+    padding: 30px 0px;
+    border: 1px solid #191919;
+    background-color: #191919;
+}
+  
+
+.container {
+    position: relative;
+    padding: 0px 110px;
+    width: 80%;
+}
+  
+/* Next & previous buttons */
+.prev-btn,
+.next-btn {
+    cursor: pointer;
+    position: absolute;
+    top: 40%;
+    width: auto;
+    padding: 16px;
+    margin-top: -50px;
+    color: rgb(102, 102, 255);
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+  
+/* Position the "next button" to the right */
+.next-btn {
+    right: 11%;
+    border-radius: 3px 0 0 3px;
+}
+  
+/* the background of button will show when mouseover */
+.prev-btn:hover,
+.next-btn:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50px;
+}
+  
+/* show the number text */
+.numbertext {
+    color: #f2f2f2;
+    background-color: #222;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+}
+  
+
+.caption {
+    text-align: center;
+    background-color: rgba(102, 102, 255, 0.7);
+    padding: 3px 16px;
+    color: black;
+    font: small-caps bold 20px/0px Times, serif;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+  
+
+.column {
+    cursor: pointer;
+    float: left;
+    width: 16.66%;
+}
+  
+
+.smallwindow {
+    opacity: 0.6;
+}
+
+/* mouseover the transparent of demo pic will lower */
+.active,
+.smallwindow:hover {
+    opacity: 1;
+}
+
+/* animation for second slide */
+.anima{
+    -webkit-animation-name: anima;
+    -webkit-animation-duration: 1.5s;
+    animation-name: anima;
+    animation-duration: 1.5s;
+}
+
+@keyframes anima{
+    from{opacity: 0;}
+    to{opacity: 1;}
+}

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>CC Cinema</title>
+        <link href="logo.png" rel="icon" type="image/png"/>
+            <style>
+         .dropdown-content a:hover, .dropdown-content li:hover{
+            cursor: pointer;
+        }
+        @font-face {
+        font-family: 'mahelisa';
+        src: url(mahelisa.ttf);
+        }
+
+        body {
+            background-color: rgb(51, 51, 51);
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1020px;
+            min-width: 800px;
+            z-index: -1;
+        }
+
+        #promotionMT {
+            text-shadow: 2px 2px 2px pink;
+            text-align: center;
+            margin-top: -50px;
+            background: linear-gradient(to bottom, rgb(194, 158, 201), rgb(71, 59, 100));
+            font-family: 'mahelisa';
+            font-size: 40px; 
+            color:rgb(63, 30, 99); 
+            text-align: center; 
+            border-radius: 30px; 
+            line-height: 60px;
+        }
+        .table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 50%;
+            height: 100px;
+            margin: 20px auto; 
+        }
+        .th {
+            font-size: 25px;
+            font-variant: small-caps;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-color: rgb(167, 57, 218);
+        }
+        .td {
+            text-align: center;
+            font-size: 20px;
+            background-color: rgb(219, 193, 235);
+        }
+        .pm, .pm2, .pm3, .pm4, .pm5, .pm6 {
+            border: 1px solid black;
+            width: 75%;
+            margin: 20px auto;
+            background: linear-gradient(to left , rgb(243, 212, 243) , rgb(243, 132, 247));
+        }
+        img {
+            border: 1px solid black;
+            float: left;
+            width: 300px;
+            height: 400px;
+        }
+        div.aMovies {
+            display: table;
+            clear: both;
+            width: 100%;
+        }
+        div.amovie {
+            float: left;
+            padding: 6%;
+        }
+        
+        div.cMovies {
+            display: table;
+            clear: both;
+            width: 100%;
+        }
+        div.cmovie {
+            float: left;
+            padding: 6%;
+        }
+        div p {
+            float: left;
+            width: 285px;
+            font-size: 20px;
+        }
+        p {
+            margin-top: 10px;
+        }
+        #C {
+            padding-top: 60px;
+            line-height: 30px;
+        }
+        .syn {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        .pr {
+            color: red;
+            font-size: 25px;
+        }
+        header {
+            font-family: cursive;
+            font-size: 30px;
+            color: rgb(168, 10, 173);
+            text-shadow: 2px 2px 3px rgb(230, 212, 198);
+            text-indent: 20px;
+        }
+        h1 {
+            font-size: 30px;
+            text-indent: 50px;
+            color: rgb(153, 102, 255);
+        }
+        h2 {
+            color: rgb(220, 198, 241);
+            text-indent: 100px;
+        }
+        h3 {
+            margin-top: 30px;
+            font-size: 28px;
+        }
+        #back {
+            font-size: xx-large;
+            margin: 100px 0px 20px 70px;
+            text-align: center;
+            color: rgb(179, 179, 255);
+            font-size: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            background: linear-gradient(60deg, #000000, #404040, #737373,#999999);
+            padding: 5px 50px;
+            border-radius: 20px;
+            outline: none;
+        }
+        #back:hover {
+            color: white;
+        }
+        #back span{
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+        #back span:after{
+            content: '\00AB';
+            position: absolute;
+            opacity: 0;
+            top: -3%;
+            right: -60px;
+            transition: 0.5s;
+        }
+        #back:hover span{
+            padding-left: 20px;
+        }
+        #back:hover span:after {
+            opacity: 1;
+            right: 60px;
+        }
+        
+        #topBtn {
+            display: none;
+            position: fixed;
+            bottom: 50px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: rgb(221, 191, 252);
+            color: black;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 160px;
+          }
+        #topBtn span{
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+        #topBtn span:after{
+            content: '\27F0';
+            position: absolute;
+            opacity: 0;
+            top: -60%;
+            right: -60px;
+            transition: 0.5s;
+        }
+
+        #topBtn:hover {
+          background-color: rgb(250, 198, 229);
+        }
+
+        #topBtn:hover span{
+            padding-top: 40px;
+        }
+        #topBtn:hover span:after {
+            opacity: 1;
+            top: 5px;
+            right: 11px;
+        }
+    </style>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <button onclick="topFunction()" id="topBtn" title="Go to top"><span><b>TOP</b></span></button>
+        <br/>
+        <br/>
+        <br/>
+        <section id="title" style="width:100%">
+            <h1 id="promotionMT">MOVIE TICKET PROMOTIONS</h1>
+        </section>
+        <h1>Weekdays :</h1>
+    <h2>Wednesday</h2>
+    <h2>(10am - 12pm)</h2>
+    <section class="pm">
+        <div class="aMovies">
+            <div class="amovie" id="aMovieA">
+                <img src="movie25.png" alt="amovieA"/>
+            </div>
+            <h3 id="C">Movie A - Charles</h3>
+            <p class="syn">Synopsis   :   A young couple moves in to their first apartment and encounters a red-headed freckled doll. Soon they discover that their home and doll reveal an evil presence.</p>
+            <p class="pr"><b>RM10.00</b></p>
+        </div>
+    </section>
+    <section class="pm2">
+        <div class="cMovies">
+            <div class="cmovie" id="cMovieA">
+                <img src="movie14.png" alt="cmovieA"/>
+            </div>
+            <h3 id="Fr">Movie B - Frozen II</h3>
+            <p class="syn">Synopsis   :   Elsa the Snow Queen has an extraordinary gift -- the power to create ice and snow. But no matter how happy she is to be surrounded by the people of Arendelle, Elsa finds herself strangely unsettled. After hearing a mysterious voice call out to her, Elsa travels to the enchanted forests and dark seas beyond her kingdom -- an adventure that soon turns into a journey of self-discovery.</p>
+            <p class="pr"><b>RM5.00</b></p>
+        </div>
+    </section>
+    <h1>Weekend :</h1>
+    <h2>Saturday</h2>
+    <h2>(10am - 12pm)</h2>
+    <section class="pm3">
+        <div class="aMovies">
+            <div class="amovie" id="aMovieB">
+                <img src="movie4.png" alt="amovieB"/>
+            </div>
+            <h3 id="J">Movie C - Joker</h3>
+            <p class="syn">Synopsis   :   Forever alone in a crowd, failed comedian     Arthur Fleck seeks connection as he walks the streets of Gotham City. Arthur wears two masks -- the one he paints for his day job as a clown, and the guise he projects in a futile attempt to feel like he's part of the world around him. Isolated, bullied and disregarded by society, Fleck begins a slow descent into madness as he transforms into the criminal mastermind known as the Joker.</p>
+            <p class="pr"><b>RM10.00</b></p>
+        </div>
+    </section>
+    <section class="pm4">
+        <div class="cMovies">
+            <div class="cmovie" id="cMovieB">
+                <img src="movie19.png" alt="cmovieB"/>
+            </div>
+            <h3 id="Co">Movie D - Coco</h3>
+            <p class="syn">Synopsis   :   Despite his family's generations-old ban on music, young Miguel dreams of becoming an accomplished musician like his idol Ernesto de la Cruz. Desperate to prove his talent, Miguel finds himself in the stunning and colorful Land of the Dead. After meeting a charming trickster named Héctor, the two new friends embark on an extraordinary journey to unlock the real story behind Miguel's family history.</p>
+            <p class="pr"><b>RM5.00</b></p>
+        </div>
+    </section>
+    <h1>Public Holiday :</h1>
+    <h2>(10am - 12pm)</h2>
+    <section  class="pm5">
+        <div class="aMovies">
+            <div class="amovie" id="aMovieC">
+                <img src="movie23.png" alt="amovieC"/>
+            </div>
+            <h3 id="IT">Movie E - IT Chapter 2</h3>
+            <p class="syn">Synopsis   :   Defeated by members of the Losers' Club, the evil clown Pennywise returns 27 years later to terrorize the town of Derry, Maine, once again. Now adults, the childhood friends have long since gone their separate ways. But when people start disappearing, Mike Hanlon calls the others home for one final stand. Damaged by scars from the past, the united Losers must conquer their deepest fears to destroy the shape-shifting Pennywise -- now more powerful than ever.</p>
+            <p class="pr"><b>RM10.00</b></p>
+        </div>
+    </section>
+    <section  class="pm6">
+        <div class="cMovies">
+            <div class="cmovie" id="cMovieC">
+                <img src="movie24.png" alt="cmovieC"/>
+            </div>
+            <h3 id="I">Movie F - Incredibles 2</h3>
+            <p class="syn">Synopsis   :   Entrusted with a task to restore public faith in superheroes, Helen sets off on a mission to catch a supervillain, while Bob faces the challenges of stay-at-home parenting.</p>
+            <p class="pr"><b>RM5.00</b></p>
+        </div>
+    </section>
+    <section>           
+            <button id="back" onclick="location.href='CustPromotion.jsp'" ><span>Back</span></button>  
+        </section>
+        <script>
+            // Get Button
+            var mybutton = document.getElementById("topBtn");
+
+            // When the user scrolls down 500px from the top of the document, system will show the button
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+              if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+                topBtn.style.display = "block";
+              } else {
+                topBtn.style.display = "none";
+              }
+            }
+
+            // When the user clicks on the button, system will scroll to the top of the document
+            function topFunction() {
+              document.body.scrollTop = 0;
+              document.documentElement.scrollTop = 0;
+        }
+        </script>
+        
+    </body>
+</html>
