@@ -1,0 +1,1023 @@
+--Role
+CREATE TABLE Role(
+    roleID VARCHAR(5) NOT NULL PRIMARY KEY,
+    role VARCHAR(15) NOT NULL UNIQUE
+);
+
+--Account
+CREATE TABLE Account(
+    emailAddress VARCHAR(50) NOT NULL PRIMARY KEY,
+    name VARCHAR(50),
+    password VARCHAR(100) NOT NULL,
+    ic VARCHAR(14) NOT NULL UNIQUE,
+    gender CHAR(1),
+    birthDate DATE,
+    address VARCHAR(100),
+    contactNo VARCHAR(12),
+    roleId VARCHAR(5) NOT NULL,
+    dateCreated DATE,
+    dateModified DATE,
+    CONSTRAINT FK_role FOREIGN KEY (roleId) REFERENCES Role(roleId)
+);
+
+--Language
+CREATE TABLE Language (
+   languageID VARCHAR(5) NOT NULL,
+   languageDesc VARCHAR(15),
+   PRIMARY KEY(languageID)
+);
+
+--MovieStatus
+CREATE TABLE MovieStatus (
+   movieStatusID VARCHAR(5) NOT NULL,
+   movieStatusDesc VARCHAR(15),
+   PRIMARY KEY(movieStatusID)
+);
+
+--MovieType
+CREATE TABLE MovieType (
+   movieTypeID VARCHAR(5) NOT NULL,
+   movieTypeDesc VARCHAR(15),
+   PRIMARY KEY(movieTypeID)
+);
+
+--MovieRestriction
+CREATE TABLE MovieRestriction (
+   movieRestrictID VARCHAR(5) NOT NULL,
+   restrictionDesc VARCHAR(10),
+   restrictionImage VARCHAR(255),
+   PRIMARY KEY(movieRestrictID)
+);
+
+--Movie
+CREATE TABLE Movie (
+   movieID VARCHAR(5) NOT NULL,
+   movieName VARCHAR(50),
+   movieTrailer VARCHAR(255),
+   moviePoster VARCHAR(255),
+   movieAdsPoster VARCHAR(255),
+   synopsis VARCHAR(255),
+   duration VARCHAR(30),
+   availableDate DATE,
+   movieStatusID VARCHAR(5) NOT NULL,
+   movieTypeID VARCHAR(5) NOT NULL,
+   movieRestrictID VARCHAR(5) NOT NULL,
+   languageID VARCHAR(5) NOT NULL,
+   PRIMARY KEY(movieID),
+   FOREIGN KEY(movieStatusID) REFERENCES MovieStatus(movieStatusID),
+   FOREIGN KEY(movieTypeID) REFERENCES MovieType(movieTypeID),
+   FOREIGN KEY(movieRestrictID) REFERENCES MovieRestriction(movieRestrictID),
+   FOREIGN KEY(languageID) REFERENCES Language(languageID)
+);
+
+
+--Actor
+CREATE TABLE Actor (
+   actorID VARCHAR(5) NOT NULL,
+   actorName VARCHAR(50),
+   PRIMARY KEY(actorID)
+);
+
+--CastList
+CREATE TABLE CastList (
+   castListID VARCHAR(5) NOT NULL,
+   actorID VARCHAR(5) NOT NULL,
+   movieID VARCHAR(5) NOT NULL,
+   PRIMARY KEY(castListID),
+   FOREIGN KEY(actorID) REFERENCES Actor(actorID),
+   FOREIGN KEY(movieID) REFERENCES Movie(movieID)
+);
+
+--THEATRECLASSES
+CREATE TABLE THEATRECLASSES(
+    theatreClassesID varchar(6) NOT NULL,
+    theatreClassesDesc varchar(50) NOT NULL,
+    PRIMARY KEY (theatreClassesID)
+);
+
+--THEATRE
+CREATE TABLE THEATRE(
+    theatreID varchar(5) NOT NULL,
+    theatreDesc varchar(50) NOT NULL,
+    totalSeatCount int NOT NULL,
+    theatreClassesID varchar(6) NOT NULL,
+    PRIMARY KEY (theatreID),
+    FOREIGN KEY (theatreClassesID) REFERENCES THEATRECLASSES(theatreClassesID)
+);
+
+--MovieSchedule
+CREATE TABLE MovieSchedule (
+   movieScheduleID VARCHAR(5) NOT NULL,
+   showDate DATE,
+   showTime TIME,
+   showDateTime VARCHAR(255),
+   movieID VARCHAR(5) NOT NULL,
+   theatreID VARCHAR(5) NOT NULL,
+   PRIMARY KEY(movieScheduleID),
+   FOREIGN KEY(movieID) REFERENCES Movie(movieID),
+   FOREIGN KEY(theatreID) REFERENCES THEATRE(theatreID)
+);
+
+--Promotion
+CREATE TABLE Promotion (
+        promoCode VARCHAR(5) NOT NULL,
+        promoType VARCHAR(10) NOT NULL,
+        promoAmount DOUBLE NOT NULL,
+        promoStatus VARCHAR(20) NOT NULL,
+        PRIMARY KEY (promoCode)
+); 
+
+--Payment
+CREATE TABLE Payment (
+        paymentID VARCHAR(5) NOT NULL,
+        paymentDateTime TIMESTAMP NOT NULL,
+        totalAmount DOUBLE NOT NULL,
+        paymentMethod VARCHAR(30) NOT NULL,
+        promoCode VARCHAR(5),
+        PRIMARY KEY(paymentID),
+        FOREIGN KEY (promoCode) REFERENCES Promotion(promoCode)  
+);
+
+--Booking
+CREATE TABLE BOOKING(
+    bookingID VARCHAR(5),
+    bookingDateTime TIMESTAMP,
+    emailAddress VARCHAR(50) NOT NULL,
+    paymentID VARCHAR(5) NOT NULL,
+    MODIFIEDDATETIME TIMESTAMP,
+    PRIMARY KEY (bookingID),
+    FOREIGN KEY (emailAddress) REFERENCES Account(emailAddress),
+    FOREIGN KEY (paymentID) REFERENCES PAYMENT(paymentID)
+);
+
+--FnbCategory
+CREATE TABLE FnbCategory (
+        fnbCategoryID VARCHAR(6) NOT NULL,
+        fnbCategory VARCHAR(50) NOT NULL UNIQUE,
+        dateCreated VARCHAR(255) NOT NULL, 
+        dateModified VARCHAR(255), 
+        PRIMARY KEY(fnbCategoryID)
+);
+
+--Fnb
+CREATE TABLE Fnb (
+        fnbID VARCHAR(5) NOT NULL,
+        fnbImage VARCHAR(255),
+        fnbDescription VARCHAR(50) NOT NULL UNIQUE,
+        fnbPrice FLOAT NOT NULL,
+        fnbStockLeft INTEGER NOT NULL,
+        active BOOLEAN NOT NULL,
+        dateCreated VARCHAR(255) NOT NULL, 
+        dateModified VARCHAR(255),
+        fnbCategoryID VARCHAR(6) NOT NULL,
+        PRIMARY KEY(fnbID),
+        FOREIGN KEY(fnbCategoryID) REFERENCES FnbCategory(fnbCategoryID)
+);
+
+--FnbOrder
+CREATE TABLE FnbOrder (
+        fnbOrderID VARCHAR(6) NOT NULL,
+        fnbOrderDateTime VARCHAR(255) NOT NULL,
+        deliveryAddress VARCHAR(255),
+        deliveryDateTime VARCHAR(255),
+        deliveryStatus VARCHAR(30),
+        bookingID VARCHAR(5) NOT NULL,
+        PRIMARY KEY(fnbOrderID),
+        FOREIGN KEY(bookingID) REFERENCES Booking(bookingID)    
+);
+
+--FnbOrderLine
+CREATE TABLE FnbOrderLine (
+        fnbOrderLineID VARCHAR(7) NOT NULL,
+        quantity INTEGER NOT NULL,
+        fnbID VARCHAR(5) NOT NULL,
+        fnbOrderID VARCHAR(6) NOT NULL,
+        PRIMARY KEY(fnbOrderLineID),
+        FOREIGN KEY(fnbID) REFERENCES Fnb(fnbID),
+        FOREIGN KEY(fnbOrderID) REFERENCES FnbOrder(fnbOrderID)
+);
+
+--SeatType
+CREATE TABLE SEATTYPE(
+    seatTypeID VARCHAR(6) NOT NULL,
+    seatDescription VARCHAR(50),
+    seatTypePrice DOUBLE,
+    PRIMARY KEY (seatTypeID)
+);
+
+--Seat
+CREATE TABLE SEAT(
+    seatID VARCHAR(5) NOT NULL,
+    SeatNo VARCHAR(5) NOT NULL,
+    movieScheduleID VARCHAR(5) NOT NULL,
+    seatTypeID VARCHAR(6) NOT NULL,
+    PRIMARY KEY(seatID),
+    FOREIGN KEY (movieScheduleID) REFERENCES MovieSchedule(movieScheduleID),
+    FOREIGN KEY (seatTypeID) REFERENCES SEATTYPE(seatTypeID)
+);
+
+
+--TicketType
+CREATE TABLE TICKETTYPE(
+    ticketTypeID VARCHAR(6) NOT NULL,
+    ticketTypeDesc VARCHAR(50) NOT NULL,
+    ticketDiscountRate DOUBLE,
+    PRIMARY KEY (ticketTypeID)
+);
+
+--Ticket
+CREATE TABLE TICKET(
+    ticketID VARCHAR(5) NOT NULL,
+    seatID VARCHAR(5) NOT NULL,
+    ticketTypeID VARCHAR(6) NOT NULL,
+    BookingID VARCHAR(5) NOT NULL,
+    PRIMARY KEY (ticketID),
+    FOREIGN KEY (seatID) REFERENCES Seat(seatID),
+    FOREIGN KEY (ticketTypeID) REFERENCES TICKETTYPE(ticketTypeID),
+    FOREIGN KEY (bookingID) REFERENCES BOOKING(bookingID)
+);
+
+--Question
+CREATE TABLE Question (
+        questionID VARCHAR(5) NOT NULL,
+        question VARCHAR(100) NOT NULL UNIQUE,
+        active BOOLEAN NOT NULL,
+        dateCreated VARCHAR(255) NOT NULL, 
+        dateModified VARCHAR(255),
+        PRIMARY KEY(questionID)
+);
+
+--FeedbackForm
+CREATE TABLE FeedbackForm (
+        feedbackFormID VARCHAR(6) NOT NULL, 
+        feedbackDateTime VARCHAR(255) NOT NULL,
+        bookingID VARCHAR(5) NOT NULL,
+        PRIMARY KEY(feedbackFormID),
+        FOREIGN KEY(bookingID) REFERENCES Booking(bookingID)
+);
+
+--FeedbackResponse
+CREATE TABLE FeedbackResponse (
+        feedbackResponseID VARCHAR(6) NOT NULL,
+        questionID VARCHAR(5) NOT NULL,
+        feedbackFormID VARCHAR(6) NOT NULL, 
+        rating INTEGER,
+        PRIMARY KEY(feedbackResponseID, questionID, feedbackFormID),
+        FOREIGN KEY(questionID) REFERENCES Question(questionID),
+        FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID)
+);
+
+--FavItem
+CREATE TABLE FavItem (
+        favItemID VARCHAR(6) NOT NULL,
+        fnbID VARCHAR(5) NOT NULL,
+        emailAddress VARCHAR(50) NOT NULL,
+        PRIMARY KEY(favItemID),
+        FOREIGN KEY(fnbID) REFERENCES Fnb(fnbID),
+        FOREIGN KEY(emailAddress) REFERENCES Account(emailAddress)
+);
+
+INSERT INTO Role
+VALUES
+    ('R0001', 'Admin'),
+    ('R0002', 'Staff'),
+    ('R0003', 'Customer');
+
+INSERT INTO Account
+VALUES
+    ('tanjeremy0930@gmail.com', 'Tan Jeremy', '69aced703c24d23d8e753ce442b22834','900930-07-1927', 'M', '1990-09-30', '11C Jln Petaling Utama 6 Tamam Petaling Utama Petaling Jaya', '012-2196892', 'R0001', '2022-03-31', NULL),
+    ('peiling0818@gmail.com' ,'Lim Pei Ling', '85bda1ee6ae4b617e930af4ca10724cc','790818-07-5802', 'F', '1979-08-18', '777-52 Mukim Damansara Petaling Jaya', '013-4325743', 'R0001', '2022-03-31', NULL),
+    ('mingxing0124@gmail.com','Kang Ming Xing', 'ef4e667c155dddb43d0b557405cead69','870124-07-9395', 'M', '1987-01-24', 'Suite F1-3 Lucky Plaza Jalan Dato Lee Fong Yee', '019-3844853', 'R0002', '2022-03-31', NULL),
+    ('kokming1234@gmail.com', 'Lee Kok Ming', '5207f020b7f17d96003e3a0dff4d606b','880620-07-2153', 'M', '1988-06-20', 'No. 99-101 Jalan Genuang', '017-2953459', 'R0002', '2022-03-31', NULL),
+    ('cheelin0410@gmail.com', 'Khaw Chee Lin', 'd88656451adf6181ae66e7c7ca6dc7fb','860410-07-7892', 'F', '1986-04-10', '7578 2 Jln Kwong Lee Bank Kuching', '012-6789927', 'R0002', '2022-03-31', NULL), 
+    ('siti0816@gmail.com', 'Siti Aminah', '2d3ed51b3b6039cf1174ac036ed354b3','900816-07-1894', 'F', '1990-08-16', 'Jalan Batik 3-2, Taman Batik', '018-4068391', 'R0003', '2022-03-31', NULL),
+    ('farah0125@gmail.com', 'Farah Ann', '62506111bda5e60957ab54297f2e0b91','900125-07-1986', 'F', '1990-01-25', '20 2 Jln Cempaka Sd 12-2 Taman Sri Damansara', '013-2948792', 'R0003', '2022-03-31', NULL),
+    ('azizul0327@gmail.com', 'Azizul Hasni', 'f1957c7c08fdd96e1a875c030c4afa52','850327-07-0398', 'F', '1985-03-27', 'Jalan Tuanku Abdul Rahman, Kompleks Pertama', '018-9488433', 'R0003', '2022-03-31', NULL),
+    ('kerming0221@gmail.com', 'Tan Ker Ming', '61d9b844324f05adf4cd319361e0c3f2','820221-07-9788', 'F', '1982-02-21', '3 President House Jln Sultan Ismail', '017-2953459', 'R0003', '2022-03-31', NULL),
+    ('yongwei0213@gmail.com', 'Low Yong Wei', 'be9031488e90c4bda5ca89683a691539','920213-07-7896', 'F', '1992-02-13', 'Lg Kompleks Wilayah Jln Dang Wangi', '016-7536904', 'R0003', '2022-03-31', NULL), 
+    ('angelyn1119@gmail.com', 'Angelyn Lee', '0061830d715d6f8120edb52abb7680df','901119-07-1894', 'F', '1990-11-19', 'Jalan USJ 10-1D, Taipan', '012-5213241', 'R0003', '2022-03-31', NULL),    
+    ('weiwei0925@gmail.com', 'Ong Wei Wei', '0a70187b04b3493ef7e7a5ca61cf6492','900925-07-1986', 'F', '1990-09-25', '52 Kampung Mampas Tanjung Negeri Sembilan', '014-7578384', 'R0003', '2022-03-31', NULL),
+    ('shinyii0102@gmail.com', 'Tan Shin Yi', '5670bf426f3f3d55a88f336003c369ac','850102-07-0398', 'F', '1985-01-02', 'No. 289 Ground Floor Lrg 9 Off Jalan Rubber', '017-6142430', 'R0003', '2022-03-31', NULL),
+    ('mike0220@gmail.com', 'Mike Ong', '7a92ba877e1fefb2097ce15e9ee5928b','820220-07-9787', 'M', '1982-02-20', 'No. 51 Jln Ss14-2A Ss14', '013-9176372', 'R0003', '2022-03-31', NULL),
+    ('syafiq0812@gmail.com', 'Syafiq Abdulah', '5d495477b365ca4f26585608657d0ffe', '920812-07-7897', 'M', '1992-08-12', 'A 10 Jln Kasawari 8 Taman Eng Ann', '019-8365153', 'R0003', '2022-03-31', NULL);
+
+INSERT INTO Language
+VALUES
+    ('L0001', 'English'),
+    ('L0002', 'Melayu'),
+    ('L0003', 'Mandarin'),
+    ('L0004', 'Tamil'),
+    ('L0005', 'Korean');
+
+INSERT INTO MovieStatus
+VALUES
+    ('MS001', 'Now Showing'),
+    ('MS002', 'Coming Soon'),
+    ('MS003', 'Not Available');
+
+INSERT INTO MovieType
+VALUES
+    ('MT001', 'Fantasy'),
+    ('MT002', 'Musical'),
+    ('MT003', 'Family'),
+    ('MT004', 'Crime'),
+    ('MT005', 'Action'),
+    ('MT006', 'Adventure'),
+    ('MT007', 'Horror'),
+    ('MT008', 'Musical'),
+    ('MT009', 'Animation');
+
+INSERT INTO MovieRestriction
+VALUES
+    ('MR001', 'P13', 'https://www.megacineplex.com.my/images/classification/P13-rating.png'),
+    ('MR002', 'P18', 'https://www.tgv.com.my/assets/images/signup/18-range.png');
+
+INSERT INTO Movie
+VALUES
+    ('MV001', 'Maleficient', 'https://www.youtube.com/embed/n0OFH4xpPr4', 'https://lumiere-a.akamaihd.net/v1/images/p_maleficentmistressofevil_payoff-18191_8c0c935b.jpeg?region=0%2C0%2C540%2C810', 'https://i.pinimg.com/originals/66/24/96/6624960f0062bd8b8845037c6776277c.jpg', 'Maleficent is a kind-hearted fairy, who is deceived by the love of her life, Stefan. Soon, she places a curse on his daughter, Aurora, in order to exact revenge.', '1 hour 38 minutes', '2022-04-03', 'MS001', 'MT001', 'MR001', 'L0001'),
+    ('MV002', 'Beauty and the beast', 'https://www.youtube.com/embed/e3Nl_TCQXuw', 'https://m.media-amazon.com/images/M/MV5BMTUwNjUxMTM4NV5BMl5BanBnXkFtZTgwODExMDQzMTI@._V1_.jpg', 'https://i1.wp.com/soundoffexperience.com/wp-content/uploads/2019/05/60347329_10156960364126777_9212172067816865792_n.jpg?fit=960%2C540&ssl=1', 'Belle, a village girl, embarks on a journey to save her father from a creature that has locked him in his dungeon. Eventually, she learns that the creature is an enchanted prince who has been cursed.', '2 hour 19 minutes', '2022-04-05', 'MS001', 'MT002', 'MR001', 'L0001'),
+    ('MV003', 'Toy Story 4', 'https://www.youtube.com/embed/wmiIUN-7qhE', 'https://m.media-amazon.com/images/M/MV5BMTYzMDM4NzkxOV5BMl5BanBnXkFtZTgwNzM1Mzg2NzM@._V1_.jpg', 'https://theindependent.my/wp-content/uploads/2019/07/toystory_2000x835_landingpg_desktop_7_71324d6f.jpeg', 'Woody attempts to make Forky, a toy, suffering from existential crisis, realise his importance in the life of Bonnie, their owner. However, things become difficult when Gabby Gabby enters their lives.', '1 hour 40 minutes', '2022-04-05', 'MS001', 'MT003', 'MR001', 'L0001'),
+    ('MV004', 'Joker', 'https://www.youtube.com/embed/zAGVQLHvwOY', 'https://imageio.forbes.com/specials-images/imageserve/5dae0ad2c538200007810d63/Official-poster-for-Warner-s--Joker-/960x0.jpg?fit=bounds&format=jpg&width=960', 'https://i0.wp.com/whatsonsidsmind.com/wp-content/uploads/2019/11/poster.jpg?resize=750%2C422&ssl=1' ,'Isolated, bullied and disregarded by society, Fleck begins a slow descent into madness as he transforms into the criminal mastermind known as the Joker.', '2 hour 2 minutes', '2022-04-06', 'MS001', 'MT004', 'MR002', 'L0001'),
+    ('MV005', 'Train To Busan', 'https://www.youtube.com/embed/yVucSRLLeIM', 'https://m.media-amazon.com/images/M/MV5BMDE3MWViMjYtZDNkMi00NzZjLTllMWEtYzVkYmRlYjdiNjU1XkEyXkFqcGdeQXVyMTA3MDk2NDg2._V1_.jpg', 'https://theasiancinemablog.com/wp-content/uploads/2019/04/train-to-busan-1.jpg','A soldier and his team battle hordes of post-apocalyptic zombies in the wastelands of the Korean Peninsula.', '1 hour 56 minutes', '2022-04-06', 'MS001', 'MT007', 'MR002', 'L0005'),
+    ('MV006', 'Iron Man', 'https://www.youtube.com/embed/oYSD2VQagc4', 'https://m.media-amazon.com/images/M/MV5BMjE5MzcyNjk1M15BMl5BanBnXkFtZTcwMjQ4MjcxOQ@@._V1_.jpg', 'https://wallpapercave.com/wp/ejT2kJO.jpg','Tony Stark encounters a formidable foe called the Mandarin. After failing to defeat his enemy, Tony embarks on a journey of self-discovery as he fights against the powerful Mandarin.', '2 hour 11 minutes', '2022-04-07', 'MS001', 'MT006', 'MR001', 'L0001'),
+    ('MV007', 'Spiderman', 'https://www.youtube.com/embed/nbp3Ra3Yp74', 'https://m.media-amazon.com/images/M/MV5BMjMyOTM4MDMxNV5BMl5BanBnXkFtZTcwNjIyNzExOA@@._V1_FMjpg_UX1000_.jpg', 'https://www.glenbrookcinema.com.au/imagesDB/movies/Spider-ManNoWayHomeSlideRated.jpg','Peter Parker, an outcast high school student, gets bitten by a radioactive spider and attains superpowers. While unravelling his parents disappearance, he must fight against the Lizard.', '2 hour 33 minutes', '2022-04-07', 'MS001', 'MT005', 'MR001', 'L0001'),
+    ('MV008', 'Hacker', 'https://www.youtube.com/embed/00NDOWXX7KY', 'https://www.themoviedb.org/t/p/w500/sJKcpT5LRuCdGpWm29yH2bMWqT0.jpg', 'https://media-cache.cinematerial.com/p/500x/guz2vl3h/hacker-danish-movie-poster.jpg?v=1557939418' ,'Working for an online criminal organization, a young Ukrainian hacker, Callan McAuliffe, launches a personal vendetta against the entire banking system after his mother loses her job.', '1 hour 35 minutes', '2022-04-01', 'MS001', 'MT004', 'MR002', 'L0001'),
+    ('MV009', 'Black water: abyss', 'https://www.youtube.com/embed/JKNv2YfrM7Y', 'https://m.media-amazon.com/images/M/MV5BZmQ5OGQ0NjQtNWJmZi00YjgxLTg5NTAtMjc5OTNjZjc0ZTlkXkEyXkFqcGdeQXVyODY5NzkyMjA@._V1_.jpg', 'https://cdn.flickeringmyth.com/wp-content/uploads/2020/07/Black-Water-Abyss-poster-2.jpg' ,'Adventurous couple fight for their survival, they come to realise that there is something else to worry about other than the rising water and falling oxygen levels, as the storm also brought in hungry crocodiles.', '1 hour 25 minutes', '2022-04-01', 'MS001', 'MT007', 'MR002', 'L0001'),
+    ('MV010', 'Dolittle', 'https://www.youtube.com/embed/hej47fWFLQs', 'https://m.media-amazon.com/images/M/MV5BMDNkODA5ZGQtODczOS00OTQxLThhMTItMjk0ZmNhMDM0YjNmXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_.jpg', 'https://jumpcutonline.co.uk/wp-content/uploads/2020/02/f1-13-1200x675.jpg' ,'Dr. John Dolittle lives in solitude behind the high walls of his lush manor in 19th-century England. His only companionship comes from an array of exotic animals that he speaks to on a daily basis.', '1 hour 41 minutes', '2022-03-10', 'MS001', 'MT003', 'MR001', 'L0001'),
+    ('MV011', '1917', 'https://www.youtube.com/embed/gZjQROMAh_s', 'https://external-preview.redd.it/vXQNIRcmgzSS4tNzGjwaTclmZKIuo6Bpgszd10gQ44c.jpg?auto=webp&s=62e9264dad02e2ea682fa5843b08ea582f87ed78', 'https://m.media-amazon.com/images/S/pv-target-images/d7d54474ae0a3dfb169a05d7e62da568d3a3b2e45ec2bcb39f9007ed004096a1.jpg' ,'During World War I, British soldiers received impossible orders. In a race against time, they must cross over into enemy territory to deliver a message that could save 1,600 comrades.', '1 hour 59 minutes', '2022-03-17', 'MS001', 'MT005', 'MR002', 'L0003'),
+    ('MV012', 'Captain America', 'https://www.youtube.com/embed/7SlILk2WMTI', 'https://m.media-amazon.com/images/I/91OxromzoSL._AC_SL1500_.jpg', 'https://c4.wallpaperflare.com/wallpaper/183/764/44/captain-america-the-winter-soldier-captain-america-nick-fury-black-widow-wallpaper-preview.jpg' ,'As Steve Rogers adapts to the complexities of a contemporary world, he joins Natasha Romanoff and Sam Wilson in his mission to uncover the secret behind a deadly, mysterious assassin.', '2 hour 16 minutes', '2022-03-20', 'MS001', 'MT006', 'MR001', 'L0001'),
+    ('MV013', 'The Jack in The Box', 'https://www.youtube.com/embed/1j1zRsb2UaE', 'https://m.media-amazon.com/images/M/MV5BZTcwMGFlOGItNDhiNi00YzBmLWE1MzctMmY3MDRmOWY4ODcxXkEyXkFqcGdeQXVyMDA4NzMyOA@@._V1_.jpg', 'https://horrorpatch.com/wp-content/uploads/2022/01/Jack_In_the_Box_Awakening_2048x1024-e1641263531919.jpg' ,'Casey Reynolds, a staff at a museum located in the heart of the woods, believes that the vintage Jack-In-The-Box that is donated to the place is cursed. He thinks that the creepy clown doll inside it has a life of its own. ', '1 hour 30 minutes', '2022-03-22', 'MS001', 'MT007', 'MR002', 'L0001'),
+    ('MV014', 'Frozen II', 'https://www.youtube.com/embed/Zi4LMpSDccc', 'https://www.adgully.com/img/800/201911/frozen-2-film-poster.jpg', 'https://www.birchbox.co.uk/images/uploads/Nov_BoxDesign_Screensaver_Desktop1920x1080px_v2.jpg' ,'Elsa has an extraordinary gift, the power to create ice and snow but she finds herself strangely unsettled. After hearing a mysterious voice call out to her, Elsa travels to the enchanted forests and dark seas beyond her kingdom.', '1 hour 43 minutes', '2022-03-26', 'MS001', 'MT002', 'MR001', 'L0001'),
+    ('MV015', 'Motif', 'https://www.youtube.com/embed/W7anc7xhA4g', 'https://1.bp.blogspot.com/-02-eS9qMCLg/XaQUNDfctbI/AAAAAAAAt4Y/bxxN6yxFmksvUQCOR1VhkTfApIjqBg8JACLcBGAsYHQ/s1600/filem%2Bmelayu%2B2019%2B-%2Bmotif.jpg', 'https://www.lowyat.net/wp-content/uploads/2019/09/Motif-5.jpg' ,'A no-nonsense police investigator gets mixed up in an out-of-town missing person case, while she herself struggles to fit into the role of a second wife in a polygamous marriage.', '1 hour 12 minutes', '2022-03-27', 'MS001', 'MT004', 'MR002', 'L0002'),
+    ('MV016', 'The Lion King', 'https://www.youtube.com/embed/7TavVZMewpY', 'https://www.cchsvoice.org/wp-content/uploads/2019/09/thumbnail.jpg', 'https://flxt.tmsimg.com/assets/p14113286_v_h10_af.jpg' ,'Simba, a young lion prince, flees his kingdom after the murder of his father, Mufasa. Years later, a chance encounter with Nala, a lioness, causes him to return and take back what is rightfully his.', '1 hour 55 minutes', '2022-03-28', 'MS001', 'MT003', 'MR001', 'L0001'),
+    ('MV017', 'Cinderella', 'https://www.youtube.com/embed/20DF6U1HcGQ', 'https://m.media-amazon.com/images/M/MV5BMjMxODYyODEzN15BMl5BanBnXkFtZTgwMDk4OTU0MzE@._V1_FMjpg_UX1000_.jpg', 'https://saportakinsta.s3.amazonaws.com/wp-content/uploads/2015/03/Cinderella-Widescreen-Wallpaper-cinderella-2015-37820077-1920-1200-1030x644.png' ,'After the untimely death of her father, Ella is troubled by her stepmother and stepsisters. However, her life changes forever after dancing with a charming stranger at the Royal Ball.', '1 hour 54 minutes', '2022-04-02', 'MS001', 'MT003', 'MR001', 'L0001'),
+    ('MV018', 'The Nutcracker', 'https://www.youtube.com/embed/BXfxLIuNJvw', 'https://m.media-amazon.com/images/M/MV5BOTg1NDI1MjEyMl5BMl5BanBnXkFtZTgwOTA5MTgwNjM@._V1_.jpg', 'https://moviebabble.com/wp-content/uploads/2018/11/The-Nutcracker-and-the-Four-Realms.jpg' ,'On Christmas Eve, Clara realises that before dying, her mother left her with an inheritance to a magical world of fairies and toy soldiers that are alive. She holds the key to the fate of this world.', '1 hour 40 minutes', '2022-04-04', 'MS001', 'MT008', 'MR001', 'L0001'),
+    ('MV019', 'Coco', 'https://www.youtube.com/embed/Ga6RYejo6Hk', 'https://lumiere-a.akamaihd.net/v1/images/p_coco_19736_fd5fa537.jpeg', 'https://stanleymovietheater.com/wp-content/uploads/2020/10/Coco-Family-Poster-Pixar.jpg' ,'Despite his family generations-old ban on music, young Miguel dreams of becoming an accomplished musician like his idol Ernesto. Desperate to prove his talent, Miguel finds himself in the stunning and colorful Land of the Dead. ', '1 hour 49 minutes', '2022-04-04', 'MS001', 'MT009', 'MR001', 'L0001'),
+    ('MV020', 'Tenet', 'https://www.youtube.com/embed/LdOM0x0XDMo', 'https://m.media-amazon.com/images/M/MV5BYzg0NGM2NjAtNmIxOC00MDJmLTg5ZmYtYzM0MTE4NWE2NzlhXkEyXkFqcGdeQXVyMTA4NjE0NjEy._V1_.jpg', 'https://cdn.mos.cms.futurecdn.net/wJ4s9FFL6FdxAoKixtr4FS.jpg' ,'A secret agent is given a single word as his weapon and sent to prevent the onset of World War III. He must travel through time and bend the laws of nature in order to be successful in his mission.', '2 hour 30 minutes', '2022-04-06', 'MS001', 'MT005', 'MR002', 'L0001'),
+    ('MV021', 'Upin & Ipin', 'https://www.youtube.com/embed/4uwVOLucTKc', 'https://m.media-amazon.com/images/M/MV5BZGJjMTAxZmQtYWZhYS00MTFjLTgzYzktMjIyMWE2ZTk4NjZjXkEyXkFqcGdeQXVyMTAwNTk4Mjg5._V1_.jpg', 'https://img1.hotstarext.com/image/upload/f_auto,t_hcdl/sources/r1/cms/prod/1724/1011724-h-059624dcb45a','Upin Ipin tried to find their way back home, they are suddenly burdened with the task of saving the kingdom from the clutches of the evil Raja Bersiong. They must overcome a series of challenging obstacles in order to restore the kingdom.', '1 hour 39 minutes', '2022-04-06', 'MS001', 'MT006', 'MR001', 'L0002'),
+    ('MV022', 'Tune in for love', 'https://www.youtube.com/embed/O2x8gaL5Omw', 'https://m.media-amazon.com/images/M/MV5BMjJiMGU4ZDMtYTA4MS00MjUyLWFkMjUtYzBmZTQ5NDRkNmExXkEyXkFqcGdeQXVyNjc3MjQzNTI@._V1_FMjpg_UX1000_.jpg', 'https://ireallyhavenothingtosaybutiwanttosayitallthesame.files.wordpress.com/2020/01/tune-in-for-love-banner.jpg?w=1440' ,'Year 1990, Hardworking Mi Soo and optimistic Hyun Woo meet at a bakery and fall in love while exchanging stories on a radio station, but while their paths keep crossing, the timing never seems to work out.', '1 hour 46 minutes', '2022-04-07', 'MS001', 'MT001', 'MR002', 'L0005'),
+    ('MV023', 'IT Chapter 2', 'https://www.youtube.com/embed/bKL1ImsN-DU', 'https://www.slashfilm.com/wp/wp-content/images/it_chapter_two_ver4_xlg.jpg', 'https://img.youtube.com/vi/xTyWvDUICw0/0.jpg' ,'When people start disappearing, Mike Hanlon calls the others home for one final stand. Damaged by scars from the past, the united Losers must conquer their deepest fears to destroy the shape-shifting Pennywise which is now more powerful than ever.', '2 hour 50 minutes', '2022-04-08', 'MS001', 'MT007', 'MR002', 'L0001'),
+    ('MV024', 'Incredibles 2', 'https://www.youtube.com/embed/i5qOzqD9Rms', 'https://i.pinimg.com/originals/e8/dc/0d/e8dc0d75be4255dfe6e5e8cad2700850.jpg', 'https://images.squarespace-cdn.com/content/v1/5afce7682971140f034f83f5/1528086910882-N2TL26SVMH0QJKQD3R9P/incredibles+2+disney.jpeg' ,'Entrusted with a task to restore public faith in superheroes, Helen sets off on a mission to catch a supervillain, while Bob faces the challenges of stay-at-home parenting.', '2 hour 11 minutes', '2022-04-09', 'MS001', 'MT009', 'MR001', 'L0001'),
+    ('MV025', 'Crawl', 'https://www.youtube.com/embed/H6MLJG0RdDE', 'https://m.media-amazon.com/images/M/MV5BZGE4N2YzNzEtNTdmYy00ZjhkLTgyYWQtOGM4OTQ0ZGEzZGU5XkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_.jpg', 'https://www.flixwatch.co/wp-content/uploads/80203186.jpg' ,'Florida residents Haley and her father get trapped in a massive hurricane and struggle to escape. But things get worse when they realise that the floodwater is the least of their fears.', '1 hour 27 minutes', '2022-04-09', 'MS001', 'MT006', 'MR002', 'L0002'),
+    ('MV026', 'Death on the Nile', 'https://www.youtube.com/embed/JM1U-Whb-P0', 'https://m.media-amazon.com/images/M/MV5BNjI4ZTQ1OTYtNTI0Yi00M2EyLThiNjMtMzk1MmZlOWMyMDQwXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_.jpg', 'https://agathachristie.imgix.net/image-store/Landing-Pages-2021/Landscape_PosterDOTN.jpg?auto=compress,format&fit=crop&w=1200&h=630' ,'While on holiday in the Nile of Egypt, world-renowned detective Hercule Poirot sets out to find a murderer linked to a mysterious love triangle.', '1 hour 25 minutes', '2022-04-30', 'MS002', 'MT006', 'MR002', 'L0001'),
+    ('MV027', 'India most wanted', 'https://www.youtube.com/embed/xmab5E_62og', 'https://cdn.cinematerial.com/p/297x/jzhzfsof/indias-most-wanted-indian-movie-poster-md.jpg?v=1592595184', 'https://cdn.dnaindia.com/sites/default/files/styles/full/public/2019/04/16/813492-arjun-kapoor-indias-most-wanted.jpg' ,'A group of five intelligence officers take on one of India biggest top-secret missions of capturing the world most wanted terrorists.', '1 hour 45 minutes', '2022-05-02', 'MS002', 'MT005', 'MR002', 'L0004'),
+    ('MV028', 'Black Widow', 'https://www.youtube.com/embed/ybji16u608U', 'https://m.media-amazon.com/images/M/MV5BNjRmNDI5MjMtMmFhZi00YzcwLWI4ZGItMGI2MjI0N2Q3YmIwXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg', 'https://images.thedirect.com/media/article_full/BW_yTKcWEF.jpg' ,'When the U.S.S.R. breaks up, the government tries to kill Black Widow as the action moves to present-day New York, where  she is a freelance operative.', '2 hour 38 minutes', '2022-05-04', 'MS002', 'MT004', 'MR002', 'L0001'),
+    ('MV029', 'Spiral', 'https://www.youtube.com/embed/rgNlWypWmtw', 'https://m.media-amazon.com/images/M/MV5BNGRiZmRkNzQtNmNkMC00ZjQxLWFlZTctN2Y4ZWJlZmM3ZTQ2XkEyXkFqcGdeQXVyMTA3MDk2NDg2._V1_.jpg', 'https://screenhubweb.files.wordpress.com/2020/02/spiral-poster.jpg' ,'When a policeman is murdered by a Jigsaw copycat killer, Zeke Banks is assigned to investigate the case. In the process of punishing the perpetrator, he ends up facing the demons of his past.', '1 hour 28 minutes', '2022-05-06', 'MS002', 'MT007', 'MR002', 'L0002'),
+    ('MV030', 'Radhe Shyam', 'https://www.youtube.com/embed/ZAP6q_Zv-4g', 'https://cdn.lifestyleasia.com/wp-content/uploads/sites/5/2022/01/06103752/MV5BMzNhOTdlNmUtYzNiYi00MmUxLTg3ZjgtZjk4Y2Y5YTk3ODdiXkEyXkFqcGdeQXVyMTE2MjAzMTU3._V1_-819x1024.jpg', 'https://www.thenewsminute.com/sites/default/files/Radhe_shyam_motion_poster_1200.jpg' ,'Radhe Shyam is a romantic drama set in Europe in the 1970s starring Prabhas and Pooja Hegde in prominent roles.', '1 hour 47 minutes', '2022-05-09', 'MS002', 'MT001', 'MR002', 'L0004'),
+    ('MV031', 'The Tunnel', 'https://www.youtube.com/embed/GTsY-ol1ays', 'https://m.media-amazon.com/images/M/MV5BMjE3ODYwODE2OV5BMl5BanBnXkFtZTgwMjM5ODA2OTE@._V1_.jpg', 'https://i.ytimg.com/vi/5vzSTD8RR5U/maxresdefault.jpg' ,'A car salesman (Ha Jung-woo) fights for survival inside a collapsed tunnel while rescue workers race against time to free him.', '1 hour 55 minutes', '2022-05-12', 'MS002', 'MT005', 'MR002', 'L0005'),
+    ('MV032', 'Vanguard', 'https://www.youtube.com/embed/Kw1u9PIbbt8', 'https://i.pinimg.com/564x/9d/4a/e1/9d4ae11e6efa2b62b98e391e5c2b5d5b.jpg', 'https://blazingminds.co.uk/wp-content/uploads/2020/12/Vanguard-UK-Quad-final-web.jpg' ,'Covert security company Vanguard is the last hope of survival for an accountant after he is targeted by the world deadliest mercenary organization. ', '1 hour 48 minutes', '2022-05-13', 'MS002', 'MT004', 'MR002', 'L0003'),
+    ('MV033', 'Jiang Zi Ya', 'https://www.youtube.com/embed/wc4vZdG3bZ4', 'https://i0.wp.com/cfen.si/wp-content/uploads/2020/01/006Y7XHgly1gazxqyia4lj34hs6doqv9.jpg?resize=584%2C828&ssl=1', 'https://s1.dmcdn.net/v/Rw14-1U8x4hm2tkBN/x1080' ,'Following orders from the god, Jiang Ziya forms an army of people with special powers to do so. Ne Zha also joins him, serving as one of the generals in the army. ', '1 hour 38 minutes', '2022-05-16', 'MS002', 'MT009', 'MR001', 'L0003'),
+    ('MV034', 'Let it Snow', 'https://www.youtube.com/embed/6U1Vl0H2tI0', 'https://www.gscmovies.com.my/wp-content/uploads/2020/08/Let-It-Snow-Poster-crop.jpg', 'https://lh3.googleusercontent.com/JVAt5FvIB1lg7KD0unxW6TUv56Z56jSaAZ1JuzkpLEf51Dmc9TvzAqWsXY8texH9efYH4hs8g1-_' ,'Mia finds herself fighting for her life, trying to survive not only against nature but also a dangerous masked snowmobile rider in black. She must escape before the mysterious figure hunts her down. ', '1 hour 25 minutes', '2022-05-18', 'MS002', 'MT004', 'MR002', 'L0001'),
+    ('MV035', '77 HeartWarmings', 'https://www.youtube.com/embed/6LR_C6rrxYU', 'https://www.cinema.com.my/images/movies/2021/777heartwarmings_sg00_450.jpg', 'https://x0.ifengimg.com/ucms/2021_19/2373543a-f668-42fa-9f82-04124cad3c95_E6D33E25D7BE1E9A1E0D4A8AC2AFF51563B450DB_size417_w1280_h719.jpg' ,'The critical and box office success of 77 Heartbreaks has led to the reuniting of cast and crew for this sequel, from heart breaks changed to heart burns. This time the couple enters the graveyard of love, marriage. ', '1 hour 28 minutes', '2022-05-20', 'MS002', 'MT001', 'MR002', 'L0003'),
+    ('MV036', 'In My Heart', 'https://www.youtube.com/embed/MNqQuSQkEcY', 'https://m.media-amazon.com/images/M/MV5BOGRkNjVjYTAtZjBkMi00YzE0LTlhNGQtOGMyZGQ3NGY3ZGEyXkEyXkFqcGdeQXVyNjA4Mjk0MjU@._V1_FMjpg_UX1000_.jpg', 'https://i.ytimg.com/vi/42ki44KB-hM/maxresdefault.jpg' ,'One night, Ah Le and Ah Yuan break into a school auditorium to play piano. While they manage to distract the security guard, a serious accident occurs while they are trying to escape. ', '1 hour 45 minutes', '2022-05-21', 'MS002', 'MT001', 'MR002', 'L0003'),
+    ('MV037', 'Monster Run', 'https://www.youtube.com/embed/M0Jc28ORRdo', 'https://m.media-amazon.com/images/M/MV5BMjYwY2RlMDEtZWFiMC00ZjdjLTllZDMtYzA0NmRhODYzOWJkXkEyXkFqcGdeQXVyMTI0MDMyMTg4._V1_.jpg', 'https://www.flixwatch.co/wp-content/uploads/81406611.jpg' ,'Since she was a young girl, JiMo has always had the ability to see monsters. Due to this, she is often considered a freak. Having never met anyone else with the same ability, she believes that she is the only person who possesses it.', '1 hour 44 minutes', '2022-05-29', 'MS002', 'MT006', 'MR002', 'L0003'),
+    ('MV038', 'The Miracle', 'https://www.youtube.com/embed/QoFJHhdMp7I', 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRUs-k2hYA_-JjzrTUVB9Y7Ugt_9A9UMFhfHDAE5L8BybmmG4_1', 'https://www.allkpop.com/upload/2021/09/content/120019/1631420346-maxresdefault.jpg' ,'Polar opposites in personality and looks, fraternal twin sisters who live completely different lives wake up one day to find they switched their bodies.', '2 hour 18 minutes', '2022-06-02', 'MS002', 'MT001', 'MR002', 'L0005'),
+    ('MV039', 'Peter Rabbit 2', 'https://www.youtube.com/embed/PWBcqCz7l_c', 'https://m.media-amazon.com/images/M/MV5BZWVkMmM4YzMtNWZkZS00ZTRlLTgxMjgtZjY0YzNlM2E3MDhlXkEyXkFqcGdeQXVyMTA4NjE0NjEy._V1_.jpg', 'https://www.celebtribune.com/wp-content/uploads/2020/11/peter-rabbit.jpg' ,'Peter Rabbit runs away from his human family when he learns they are going to portray him in a bad light in their book. Soon, he crosses paths with an older rabbit who ropes him into a heist.', '1 hour 25 minutes', '2022-06-05', 'MS002', 'MT003', 'MR001', 'L0001'),
+    ('MV040', 'Rumble', 'https://www.youtube.com/embed/hrkGNaYOv5k', 'https://m.media-amazon.com/images/M/MV5BOTdhNDM5YmEtOWFhZS00NjQwLTg3ZTQtMGI2OTNhZjQ2OGQxXkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UX1000_.jpg', 'https://images-na.ssl-images-amazon.com/images/S/pv-target-images/98e89eef4e9efa77a80abfc108d847c65be4793b161fada414ac6140a55f19ca._UY500_UX667_RI_V_TTW_.jpg' ,'In a world where monsters are tame and monster wrestling is a popular sport, Winnie her father footsteps by turning an inexperienced monster into a contender. ', '1 hour 47 minutes', '2022-06-09', 'MS002', 'MT003', 'MR001', 'L0001'),
+    ('MV041', 'Embrace Again', 'https://www.youtube.com/embed/Fn1YeHbu90Y', 'https://images.fandango.com/ImageRenderer/0/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/226741/ChinaLion_EmbraceAgain_Poster_WebFriendly.jpg', 'http://img2.chinadaily.com.cn/images/202201/12/61de6c52a310cdd3d8265a06.jpeg' ,'During COVID-19 pandemic, the citizens in Wuhan are given the courage to move forward by love and laughter and embrace each other once again.', '2 hour 15 minutes', '2022-03-05', 'MS003', 'MT003', 'MR002', 'L0003'),
+    ('MV042', 'My Love', 'https://www.youtube.com/embed/E1hcn8pI3a8', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQka7Cd0UrYk-5kwhL3XXwkB8yrrG7idGk-9lGLXldOgHSPOyFy', 'https://n.sinaimg.cn/ent/transform/185/w630h355/20210425/af68-kpamyik0591910.jpg' ,'In high school, the gifted swimmer fell in love with the transfer student at first sight. His love was pure and innocent as he silently stood by her but she left without saying goodbye.', '1 hour 58 minutes', '2022-03-08', 'MS003', 'MT001', 'MR002', 'L0003');
+
+INSERT INTO Actor
+VALUES
+    ('A0001', 'Angelina Jolie'),
+    ('A0002', 'Elle Fanning'),
+    ('A0003', 'Sam Riley'),
+    ('A0004', 'Juno Temple'),
+    ('A0005', 'Imelda Staunton'),
+    ('A0006', 'Emma Charlotte'),
+    ('A0007', 'Duerre Watson'),
+    ('A0008', 'Dan Stevens'),
+    ('A0009', 'Luke Evans'),
+    ('A0010', 'Tom Hanks'),
+    ('A0011', 'Keanu Reeves'),
+    ('A0012', 'Tim Allen'),
+    ('A0013', 'Tony Hale'),
+    ('A0014', 'Joaquin Phoenix'),
+    ('A0015', 'Robert De Niro'),
+    ('A0016', 'Zazie Beetz'),
+    ('A0017', 'Frances Conroy'),
+    ('A0018', 'Brett Cullen'),
+    ('A0019', 'Gang Dong-Won'),
+    ('A0020', 'Lee Jung-Hyun'),
+    ('A0021', 'Kwon Hae-Hyo'),
+    ('A0022', 'Robert Downey'),
+    ('A0023', 'Gwyneth Paltrow'),
+    ('A0024', 'Don Cheadle'),
+    ('A0025', 'Guy Pearce'),
+    ('A0026', 'Rebecca Hall'),
+    ('A0027', 'Lorraine Nicholson'),
+    ('A0028', 'Callan McAuliffe'),
+    ('A0029', 'Daniel Eric Gold'),
+    ('A0030', 'Clifton Collins'),
+    ('A0031', 'Jessica McNamee'),
+    ('A0032', 'Luke Mitchell'),
+    ('A0033', 'Amali Golden'),
+    ('A0034', 'Tom Holland'),
+    ('A0035', 'Rami Malek'),
+    ('A0036', 'Selena Gomez'),
+    ('A0037', 'Beyoncé'),
+    ('A0038', 'Donald Glover'),
+    ('A0039', 'Chiwetel Ejiofor'),
+    ('A0040', 'Seth Rogen'),
+    ('A0041', 'Danny DeVito'),
+    ('A0042', 'Karen Gillan'),
+    ('A0043', 'Dwayne Johnson'),
+    ('A0044', 'Jack Black'),
+    ('A0045', 'Kevin Hart'),
+    ('A0046', 'Charlene Choi'),
+    ('A0047', 'Pakho Chau'),
+    ('A0048', 'Michelle Wai'),
+    ('A0049', 'Zen Wong'),
+    ('A0050', 'Yuan Teng'),
+    ('A0051', 'Xiao Zhan'),
+    ('A0052', 'Yang Zi'),
+    ('A0053', 'Charles Tu'),
+    ('A0054', 'Jackie Chan'),
+    ('A0055', 'Yang Yang'),
+    ('A0056', 'Miya Muqi'),
+    ('A0057', 'Lun Ai'),
+    ('A0058', 'Lee Jung Jae'),
+    ('A0059', 'Park Jung Min'),
+    ('A0060', 'Choi Hee-seo'),
+    ('A0061', 'Hwang Jung-Min'),
+    ('A0062', 'Choi Jisoo'),
+    ('A0063', 'Jennie Kim'),
+    ('A0064', 'Rose Wong'),
+    ('A0065', 'Lee Sullyoon'),
+    ('A0066', 'Zheng Xi'),
+    ('A0067', 'Angelababy Yang'),
+    ('A0068', 'Karina Tan'),
+    ('A0069', 'Tyler Falcoa'),
+    ('A0070', 'Shannon Ray Morris');
+
+INSERT INTO CastList
+VALUES
+    ('CL001', 'A0001', 'MV001'),
+    ('CL002', 'A0002', 'MV001'),
+    ('CL003', 'A0003', 'MV001'),
+    ('CL004', 'A0004', 'MV002'),
+    ('CL005', 'A0005', 'MV002'),
+    ('CL006', 'A0006', 'MV002'),
+    ('CL007', 'A0007', 'MV003'),
+    ('CL008', 'A0008', 'MV003'),
+    ('CL009', 'A0009', 'MV003'),
+    ('CL010', 'A0010', 'MV004'),
+    ('CL011', 'A0011', 'MV004'),
+    ('CL012', 'A0012', 'MV004'),
+    ('CL013', 'A0019', 'MV005'),
+    ('CL014', 'A0020', 'MV005'),
+    ('CL015', 'A0021', 'MV005'),
+    ('CL016', 'A0016', 'MV006'),
+    ('CL017', 'A0017', 'MV006'),
+    ('CL018', 'A0018', 'MV006'),
+    ('CL019', 'A0013', 'MV007'),
+    ('CL020', 'A0014', 'MV007'),
+    ('CL021', 'A0015', 'MV007'),
+    ('CL022', 'A0022', 'MV008'),
+    ('CL023', 'A0023', 'MV008'),
+    ('CL024', 'A0024', 'MV008'),
+    ('CL025', 'A0025', 'MV009'),
+    ('CL026', 'A0026', 'MV009'),
+    ('CL027', 'A0027', 'MV009'),
+    ('CL028', 'A0028', 'MV010'),
+    ('CL029', 'A0029', 'MV010'),
+    ('CL030', 'A0030', 'MV010'),
+    ('CL031', 'A0031', 'MV011'),
+    ('CL032', 'A0032', 'MV011'),
+    ('CL033', 'A0033', 'MV012'),
+    ('CL034', 'A0034', 'MV012'),
+    ('CL035', 'A0035', 'MV013'),
+    ('CL036', 'A0036', 'MV013'),
+    ('CL037', 'A0037', 'MV014'),
+    ('CL038', 'A0038', 'MV014'),
+    ('CL039', 'A0039', 'MV015'),
+    ('CL040', 'A0040', 'MV015'),
+    ('CL041', 'A0041', 'MV016'),
+    ('CL042', 'A0042', 'MV016'),
+    ('CL043', 'A0043', 'MV017'),
+    ('CL044', 'A0044', 'MV017'),
+    ('CL045', 'A0045', 'MV018'),
+    ('CL046', 'A0046', 'MV018'),
+    ('CL047', 'A0047', 'MV019'),
+    ('CL048', 'A0048', 'MV019'),
+    ('CL049', 'A0031', 'MV020'),
+    ('CL050', 'A0043', 'MV020'),
+    ('CL051', 'A0005', 'MV021'),
+    ('CL052', 'A0017', 'MV021'),
+    ('CL053', 'A0051', 'MV022'),
+    ('CL054', 'A0052', 'MV022'),
+    ('CL055', 'A0049', 'MV023'),
+    ('CL056', 'A0050', 'MV023'),
+    ('CL057', 'A0053', 'MV024'),
+    ('CL058', 'A0056', 'MV024'),
+    ('CL059', 'A0057', 'MV025'),
+    ('CL060', 'A0014', 'MV025'),
+    ('CL061', 'A0030', 'MV026'),
+    ('CL062', 'A0036', 'MV026'),
+    ('CL063', 'A0041', 'MV026'),
+    ('CL064', 'A0031', 'MV027'),
+    ('CL065', 'A0042', 'MV027'),
+    ('CL066', 'A0043', 'MV026'),
+    ('CL067', 'A0027', 'MV028'),
+    ('CL068', 'A0028', 'MV028'),
+    ('CL069', 'A0024', 'MV029'),
+    ('CL070', 'A0025', 'MV029'),
+    ('CL071', 'A0033', 'MV030'),
+    ('CL072', 'A0036', 'MV030'),
+    ('CL073', 'A0014', 'MV031'),
+    ('CL074', 'A0035', 'MV031'),
+    ('CL075', 'A0054', 'MV032'),
+    ('CL076', 'A0055', 'MV032'),
+    ('CL077', 'A0056', 'MV033'),
+    ('CL078', 'A0057', 'MV033'),
+    ('CL079', 'A0043', 'MV034'),
+    ('CL080', 'A0044', 'MV034'),
+    ('CL081', 'A0058', 'MV035'),
+    ('CL082', 'A0059', 'MV035'),
+    ('CL083', 'A0060', 'MV036'),
+    ('CL084', 'A0062', 'MV036'),
+    ('CL085', 'A0061', 'MV037'),
+    ('CL086', 'A0064', 'MV037'),
+    ('CL087', 'A0060', 'MV038'),
+    ('CL088', 'A0063', 'MV038'),
+    ('CL089', 'A0038', 'MV039'),
+    ('CL090', 'A0065', 'MV039'),
+    ('CL091', 'A0014', 'MV040'),
+    ('CL092', 'A0070', 'MV040'),
+    ('CL093', 'A0066', 'MV041'),
+    ('CL094', 'A0067', 'MV041'),
+    ('CL095', 'A0068', 'MV042'),
+    ('CL096', 'A0069', 'MV042'),
+    ('CL097', 'A0043', 'MV040'),
+    ('CL098', 'A0054', 'MV041'),
+    ('CL099', 'A0033', 'MV042');
+
+INSERT INTO THEATRECLASSES
+VALUES 
+        ('TC0001', 'D-BOX'),
+        ('TC0002', 'IMAX®'),
+        ('TC0003', 'Premiere Class'),
+        ('TC0004', '3D'),
+        ('TC0005', '2D');
+		
+INSERT INTO THEATRE
+VALUES
+        ('T0001', 'Hall 1', 54, 'TC0001'),
+        ('T0002', 'Hall 2', 250, 'TC0002'),
+        ('T0003', 'Hall 3', 250, 'TC0002'),
+        ('T0004', 'Hall 4', 84, 'TC0003'),
+        ('T0005', 'Hall 5', 84, 'TC0003'),
+        ('T0006', 'Hall 6', 150, 'TC0004'),
+        ('T0007', 'Hall 7', 150, 'TC0004'),
+        ('T0008', 'Hall 8', 150, 'TC0005'),
+        ('T0009', 'Hall 9', 150, 'TC0005'),
+        ('T0010', 'Hall 10', 150, 'TC0005');
+
+INSERT INTO MovieSchedule
+VALUES
+    ('S0001', '2022-04-14', '11:30:00', '2022-04-14 11:30:00', 'MV001', 'T0001'),
+    ('S0002', '2022-04-14', '14:00:00', '2022-04-14 14:00:00', 'MV001', 'T0001'),
+    ('S0003', '2022-04-14', '17:30:00', '2022-04-14 17:30:00', 'MV001', 'T0002'),
+    ('S0004', '2022-04-14', '20:45:00', '2022-04-14 20:45:00', 'MV001', 'T0002'),
+    ('S0005', '2022-04-14', '12:30:00', '2022-04-14 12:30:00', 'MV002', 'T0003'),
+    ('S0006', '2022-04-14', '15:30:00', '2022-04-14 15:30:00', 'MV002', 'T0003'),
+    ('S0007', '2022-04-14', '18:45:00', '2022-04-14 18:45:00', 'MV002', 'T0004'),
+    ('S0008', '2022-04-14', '21:30:00', '2022-04-14 21:30:00', 'MV002', 'T0004'),
+    ('S0009', '2022-04-14', '10:00:00', '2022-04-14 10:00:00', 'MV003', 'T0005'),
+    ('S0010', '2022-04-14', '14:25:00', '2022-04-14 14:25:00', 'MV003', 'T0005'),
+    ('S0011', '2022-04-14', '16:30:00', '2022-04-14 16:30:00', 'MV003', 'T0006'),
+    ('S0012', '2022-04-14', '21:45:00', '2022-04-14 21:45:00', 'MV003', 'T0006'),
+    ('S0013', '2022-04-15', '13:00:00', '2022-04-15 13:00:00', 'MV004', 'T0007'),
+    ('S0014', '2022-04-15', '16:25:00', '2022-04-15 16:25:00', 'MV004', 'T0007'),
+    ('S0015', '2022-04-15', '19:30:00', '2022-04-15 19:30:00', 'MV004', 'T0008'),
+    ('S0016', '2022-04-15', '22:45:00', '2022-04-15 22:45:00', 'MV004', 'T0008'),
+    ('S0017', '2022-04-15', '12:00:00', '2022-04-15 12:00:00', 'MV005', 'T0009'),
+    ('S0018', '2022-04-15', '15:25:00', '2022-04-15 15:25:00', 'MV005', 'T0009'),
+    ('S0019', '2022-04-15', '18:35:00', '2022-04-15 18:35:00', 'MV005', 'T0010'),
+    ('S0020', '2022-04-15', '22:45:00', '2022-04-15 22:45:00', 'MV005', 'T0010'),
+    ('S0021', '2022-04-16', '10:30:00', '2022-04-16 10:30:00', 'MV006', 'T0001'),
+    ('S0022', '2022-04-16', '14:25:00', '2022-04-16 14:25:00', 'MV006', 'T0001'),
+    ('S0023', '2022-04-16', '17:35:00', '2022-04-16 17:35:00', 'MV006', 'T0002'),
+    ('S0024', '2022-04-16', '19:45:00', '2022-04-16 19:45:00', 'MV006', 'T0002'),
+    ('S0025', '2022-04-16', '11:20:00', '2022-04-16 11:20:00', 'MV007', 'T0003'),
+    ('S0026', '2022-04-16', '13:20:00', '2022-04-16 13:20:00', 'MV007', 'T0003'),
+    ('S0027', '2022-04-16', '16:35:00','2022-04-16 16:35:00', 'MV007', 'T0004'),
+    ('S0028', '2022-04-16', '21:40:00', '2022-04-16 21:40:00', 'MV007', 'T0004'),
+    ('S0029', '2022-04-17', '12:00:00', '2022-04-17 12:00:00', 'MV008', 'T0005'),
+    ('S0030', '2022-04-17', '15:15:00', '2022-04-17 15:15:00', 'MV008', 'T0005'),
+    ('S0031', '2022-04-17', '18:30:00', '2022-04-17 18:30:00', 'MV008', 'T0006'),
+    ('S0032', '2022-04-17', '22:45:00', '2022-04-17 22:45:00', 'MV008', 'T0006'),
+    ('S0033', '2022-04-17', '12:15:00', '2022-04-17 12:15:00', 'MV009', 'T0007'),
+    ('S0034', '2022-04-17', '15:30:00', '2022-04-17 15:30:00', 'MV009', 'T0007'),
+    ('S0035', '2022-04-17', '17:45:00', '2022-04-17 17:45:00', 'MV009', 'T0008'),
+    ('S0036', '2022-04-17', '20:00:00', '2022-04-17 20:00:00', 'MV009', 'T0008'),
+    ('S0037', '2022-04-18', '11:30:00', '2022-04-18 11:30:00', 'MV010', 'T0009'),
+    ('S0038', '2022-04-18', '15:15:00', '2022-04-18 15:15:00', 'MV010', 'T0009'),
+    ('S0039', '2022-04-18', '19:45:00', '2022-04-18 19:45:00', 'MV010', 'T0010'),
+    ('S0040', '2022-04-18', '10:25:00','2022-04-18 10:25:00', 'MV011', 'T0001'),
+    ('S0041', '2022-04-18', '13:15:00','2022-04-18 13:15:00', 'MV011', 'T0001'),
+    ('S0042', '2022-04-18', '18:30:00', '2022-04-18 18:30:00', 'MV011', 'T0002'),
+    ('S0043', '2022-04-19', '12:00:00', '2022-04-19 12:00:00', 'MV012', 'T0005'),
+    ('S0044', '2022-04-19', '15:15:00','2022-04-19 15:15:00', 'MV012', 'T0005'),
+    ('S0045', '2022-04-19', '18:30:00','2022-04-19 18:30:00', 'MV012', 'T0006'),
+    ('S0046', '2022-04-19', '21:45:00','2022-04-19 21:45:00', 'MV012', 'T0006'),
+    ('S0047', '2022-04-19', '10:20:00', '2022-04-19 10:20:00', 'MV013', 'T0007'),
+    ('S0048', '2022-04-19', '15:25:00', '2022-04-19 15:25:00', 'MV013', 'T0007'),
+    ('S0049', '2022-04-19', '19:30:00', '2022-04-19 19:30:00', 'MV013', 'T0008'),
+    ('S0050', '2022-04-20', '12:00:00', '2022-04-20 12:00:00', 'MV014', 'T0009'),
+    ('S0051', '2022-04-20', '16:15:00', '2022-04-20 16:15:00', 'MV014', 'T0009'),
+    ('S0052', '2022-04-20', '19:25:00', '2022-04-20 19:25:00', 'MV014', 'T0010'),
+    ('S0053', '2022-04-20', '22:30:00', '2022-04-20 22:30:00', 'MV014', 'T0010'),
+    ('S0054', '2022-04-20', '10:15:00', '2022-04-20 10:15:00', 'MV015', 'T0003'),
+    ('S0055', '2022-04-20', '13:20:00', '2022-04-20 13:20:00', 'MV015', 'T0003'),
+    ('S0056', '2022-04-20', '18:45:00', '2022-04-20 18:45:00', 'MV015', 'T0004'),
+    ('S0057', '2022-04-21', '11:15:00', '2022-04-21 11:15:00', 'MV016', 'T0007'),
+    ('S0058', '2022-04-21', '13:25:00', '2022-04-21 13:25:00', 'MV016', 'T0007'),
+    ('S0059', '2022-04-21', '16:30:00', '2022-04-21 16:30:00', 'MV016', 'T0008'),
+    ('S0060', '2022-04-21', '22:45:00', '2022-04-21 22:45:00', 'MV016', 'T0008'),
+    ('S0061', '2022-04-21', '10:15:00', '2022-04-21 10:15:00', 'MV017', 'T0003'),
+    ('S0062', '2022-04-21', '13:00:00', '2022-04-21 13:00:00', 'MV017', 'T0003'),
+    ('S0063', '2022-04-21', '16:25:00', '2022-04-21 16:25:00', 'MV017', 'T0004'),
+    ('S0064', '2022-04-21', '12:00:00', '2022-04-21 12:00:00', 'MV018', 'T0004'),
+    ('S0065', '2022-04-21', '15:15:00', '2022-04-21 15:15:00', 'MV018', 'T0004'),
+    ('S0066', '2022-04-21', '18:30:00', '2022-04-21 18:30:00', 'MV018', 'T0005'),
+    ('S0067', '2022-04-21', '20:45:00', '2022-04-21 20:45:00', 'MV018', 'T0005'),
+    ('S0068', '2022-04-22', '12:00:00', '2022-04-22 12:00:00', 'MV019', 'T0008'),
+    ('S0069', '2022-04-22', '15:15:00', '2022-04-22 15:15:00', 'MV019', 'T0008'),
+    ('S0070', '2022-04-22', '18:30:00', '2022-04-22 18:30:00', 'MV019', 'T0009'),
+    ('S0071', '2022-04-22', '20:45:00', '2022-04-22 20:45:00', 'MV019', 'T0009'),
+    ('S0072', '2022-04-23', '10:00:00', '2022-04-23 10:00:00', 'MV020', 'T0010'),
+    ('S0073', '2022-04-23', '13:15:00', '2022-04-23 13:15:00', 'MV020', 'T0010'),
+    ('S0074', '2022-04-23', '15:30:00', '2022-04-23 15:30:00', 'MV020', 'T0001'),
+    ('S0075', '2022-04-23', '12:15:00', '2022-04-23 12:15:00', 'MV021', 'T0002'),
+    ('S0076', '2022-04-23', '18:25:00', '2022-04-23 18:25:00', 'MV021', 'T0002'),
+    ('S0077', '2022-04-23', '22:45:00', '2022-04-23 22:45:00', 'MV021', 'T0003'),
+    ('S0078', '2022-04-24', '10:30:00', '2022-04-24 10:30:00', 'MV022', 'T0003'),
+    ('S0079', '2022-04-24', '15:00:00', '2022-04-24 15:00:00', 'MV022', 'T0003'),
+    ('S0080', '2022-04-24', '20:25:00', '2022-04-24 20:25:00', 'MV022', 'T0004'),
+    ('S0081', '2022-04-24', '10:15:00', '2022-04-24 10:15:00', 'MV023', 'T0004'),
+    ('S0082', '2022-04-24', '13:00:00', '2022-04-24 13:00:00', 'MV023', 'T0004'),
+    ('S0083', '2022-04-24', '18:30:00', '2022-04-24 18:30:00', 'MV023', 'T0005'),
+    ('S0084', '2022-04-25', '12:15:00', '2022-04-25 12:15:00', 'MV024', 'T0005'),
+    ('S0085', '2022-04-25', '15:20:00', '2022-04-25 15:20:00', 'MV024', 'T0005'),
+    ('S0086', '2022-04-25', '19:30:00', '2022-04-25 19:30:00', 'MV024', 'T0006'),
+    ('S0087', '2022-04-25', '13:45:00', '2022-04-25 13:45:00', 'MV025', 'T0006'),
+    ('S0088', '2022-04-25', '18:30:00', '2022-04-25 18:30:00', 'MV025', 'T0006'),
+    ('S0089', '2022-04-25', '20:40:00', '2022-04-25 20:40:00', 'MV025', 'T0007'),
+    ('S0090', '2022-04-14', '13:45:00', '2022-04-14 13:45:00', 'MV018', 'T0004'),
+    ('S0091', '2022-04-14', '18:30:00', '2022-04-14 18:30:00', 'MV018', 'T0008'),
+    ('S0092', '2022-04-14', '21:15:00', '2022-04-14 21:15:00', 'MV018', 'T0010'),
+    ('S0093', '2022-04-15', '13:45:00', '2022-04-15 13:45:00', 'MV018', 'T0006'),
+    ('S0094', '2022-04-15', '18:30:00', '2022-04-15 18:30:00', 'MV018', 'T0008'),
+    ('S0095', '2022-04-15', '20:45:00', '2022-04-15 20:45:00', 'MV018', 'T0005');
+
+INSERT INTO Promotion 
+VALUES
+    ('CC123', 'Food', 3.00, 'Available'),
+    ('CC234', 'Food', 2.00, 'Available'),
+    ('AB123', 'Movie', 3.00, 'Available'),
+    ('AB234', 'Movie', 2.00, 'Available');
+
+INSERT INTO PAYMENT
+VALUES
+    ('P0001', '2022-04-01 11:30:00.000', 12.0, 'TouchAndGo', 'CC234'),
+    ('P0002', '2022-04-01 10:10:00.000', 14.0, 'CreditCard', 'CC123'),
+    ('P0003', '2022-04-01 14:40:00.000', 16.0, 'TouchAndGo', 'AB123'),
+    ('P0004', '2022-04-02 14:50:00.000', 12.0, 'CreditCard', 'AB234'),
+    ('P0005', '2022-04-02 14:50:34.414', 12.0, 'CreditCard', 'AB234'),
+    ('P0006', '2022-04-02 14:50:34.414', 12.0, 'CreditCard', 'CC234'),
+    ('P0007', '2022-04-03 14:50:34.414', 12.0, 'CreditCard', 'CC234'),
+    ('P0008', '2022-04-03 14:50:34.414', 12.0, 'CreditCard', 'AB123'),
+    ('P0009', '2022-04-03 14:51:34.000', 12.0, 'CreditCard', 'CC234'),
+    ('P0010', '2022-04-04 14:51:34.000', 12.0, 'CreditCard', 'CC234'),
+    ('P0011', '2022-04-05 15:05:01.000', 12.0, 'CreditCard', 'CC123'),
+    ('P0012', '2022-04-05 15:05:01.000', 12.0, 'CreditCard', 'CC123'),
+    ('P0013', '2022-04-06 15:05:01.000', 12.0, 'TouchAndGo', 'AB234'),
+    ('P0014', '2022-04-06 15:05:01.000', 12.0, 'TouchAndGo', 'AB234'),
+    ('P0015', '2022-04-06 15:05:01.000', 12.0, 'TouchAndGo', 'CC234'),
+    ('P0016', '2022-04-07 15:05:01.000', 12.0, 'TouchAndGo', 'AB234'),
+    ('P0017', '2022-04-07 15:05:01.000', 12.0, 'TouchAndGo', 'AB234');
+
+INSERT INTO BOOKING
+VALUES 
+('B0001','2022-04-01 21:34:00.000',	'tanjeremy0930@gmail.com',	'P0001',	'2022-04-11 07:09:55.000'),
+('B0002','2022-04-01 14:50:47.000',	'peiling0818@gmail.com',	'P0002',	'2022-04-11 07:55:27.000'),
+('B0003','2022-04-01 14:50:57.000',	'mingxing0124@gmail.com',	'P0003',	'2022-04-11 07:56:16.000'),
+('B0004','2022-04-02 14:51:06.000',	'kokming1234@gmail.com',	'P0004',	'2022-04-11 08:01:18.000'),
+('B0005','2022-04-02 14:51:19.000',	'cheelin0410@gmail.com',	'P0005',	'2022-04-11 08:02:16.000'),
+('B0006','2022-04-02 14:51:33.000',	'siti0816@gmail.com',	'P0006',	'2022-04-11 08:04:41.000'),
+('B0007','2022-04-03 14:51:42.000',	'tanjeremy0930@gmail.com',	'P0007',	'2022-04-11 08:06:05.000'),
+('B0008','2022-04-03 14:52:04.000',	'azizul0327@gmail.com',	'P0008',	'2022-04-11 08:09:12.000'),
+('B0009','2022-04-03 14:52:19.000',	'kerming0221@gmail.com',	'P0009',	'2022-04-11 08:11:13.000'),
+('B0010','2022-04-04 14:52:43.000',	'yongwei0213@gmail.com',	'P0010',	'2022-04-11 08:12:11.000'),
+('B0011','2022-04-05 15:05:35.000',	'peiling0818@gmail.com',	'P0011',	null),
+('B0012','2022-04-05 15:05:42.000',	'peiling0818@gmail.com',	'P0012',	null),
+('B0013','2022-04-06 15:05:51.000',	'mingxing0124@gmail.com',	'P0013',	null),
+('B0014','2022-04-06 15:06:09.000',	'kokming1234@gmail.com',	'P0014',	null),
+('B0015','2022-04-06 15:06:18.000',	'cheelin0410@gmail.com',	'P0015',	null),
+('B0016','2022-04-07 15:06:32.000',	'siti0816@gmail.com',	'P0016',	null),
+('B0017','2022-04-07 15:06:39.000',	'siti0816@gmail.com',	'P0017',	null);
+
+INSERT INTO FnbCategory 
+VALUES
+    ('FC0001', 'Combos', '26-03-2022 18:39:32', ''),
+    ('FC0002', 'Drinks', '26-03-2022 18:39:34', ''),
+    ('FC0003', 'Popcorn', '26-03-2022 18:39:40', ''),
+    ('FC0004', 'Snacks', '26-03-2022 18:39:43', '');
+
+INSERT INTO Fnb 
+VALUES
+    ('F0001', 'comboA.png', 'Combo A', 15, 30, true, '01-04-2022 16:02:06', '', 'FC0001'),
+    ('F0002', 'comboB.png', 'Combo B', 15, 3, true, '01-04-2022 16:02:21', '', 'FC0001'),
+    ('F0003', 'comboC.png', 'Combo C', 18, 50, true, '01-04-2022 16:02:42', '', 'FC0001'),
+    ('F0004', 'comboD.png', 'Combo D', 18, 46, true, '01-04-2022 16:03:15', '', 'FC0001'),
+    ('F0005', 'comboE.png', 'Combo E', 25, 37, true, '01-04-2022 16:03:31', '', 'FC0001'),
+    ('F0006', 'comboF.png', 'Combo F', 25, 41, true, '01-04-2022 16:03:46', '', 'FC0001'),
+    ('F0007', 'coke.png', 'Coke', 5, 14, true, '01-04-2022 16:04:01', '', 'FC0002'),
+    ('F0008', 'dietCoke.png', 'Diet Coke', 5, 19, true, '01-04-2022 16:04:33', '', 'FC0002'),
+    ('F0009', 'sprite.png', 'Sprite', 5, 5, true, '01-04-2022 16:04:48', '', 'FC0002'),
+    ('F0010', 'mountainDew.png', 'Mountain Dew', 5, 16, true, '01-04-2022 16:05:08', '', 'FC0002'),
+    ('F0011', 'mineralWater.png', 'Mineral Water', 5, 49, true, '01-04-2022 16:05:40', '', 'FC0002'),
+    ('F0012', 'hotMilo.png', 'Hot Milo', 5, 15, true, '01-04-2022 16:05:56', '', 'FC0002'),
+    ('F0013', 'icedMilo.png', 'Iced Milo', 5, 41, true, '01-04-2022 16:06:19', '', 'FC0002'),
+    ('F0014', 'nescafeOriginal.png', 'Nescafe Original', 5, 18, true, '01-04-2022 16:06:50', '', 'FC0002'),
+    ('F0015', 'nescafeMocha.png', 'Nescafe Mocha', 5, 46, true, '01-04-2022 16:07:18', '', 'FC0002'),
+    ('F0016', 'eurekaClassicCaramel.png', 'Eureka Classic Caramel', 12, 9, true, '01-04-2022 16:07:36', '', 'FC0003'),
+    ('F0017', 'eurekaSavouryCheese.png', 'Eureka Savoury Cheese', 12, 12, true, '01-04-2022 16:08:09', '', 'FC0003'),
+    ('F0018', 'eurekaHotSpicy.png', 'Eureka Hot & Spicy', 12, 45, true, '01-04-2022 16:08:35', '', 'FC0003'),
+    ('F0019', 'eurekaCreamySourCreamOnion.png', 'Eureka Creamy Sour Cream & Onion', 12, 37, true, '01-04-2022 16:08:59', '', 'FC0003'),
+    ('F0020', 'eurekaSupremePizza.png', 'Eureka Supreme Pizza', 12, 12, true, '01-04-2022 16:09:21', '', 'FC0003'),
+    ('F0021', 'eurekaTangyTomato.png', 'Eureka Tangy Tomato', 12, 4, true, '01-04-2022 16:09:40', '', 'FC0003'),
+    ('F0022', 'twistiesChicken.png', 'Twisties Chicken', 4, 21, true, '01-04-2022 16:10:09', '', 'FC0004'),
+    ('F0023', 'twistiesBBQCurry.png', 'Twisties BBQ Curry', 4, 23, true, '01-04-2022 16:10:26', '', 'FC0004'),
+    ('F0024', 'twistiesCheese.png', 'Twisties Cheese', 4, 37, true, '01-04-2022 16:10:52', '', 'FC0004'),
+    ('F0025', 'twistiesTomato.png', 'Twisties Tomato', 4, 14, true, '01-04-2022 16:11:20', '', 'FC0004'),
+    ('F0026', 'mNmChocolate.png', 'M&M''s Chocolate', 10, 57, true, '01-04-2022 16:11:52', '', 'FC0004'),
+    ('F0027', 'mNmPeanut.png', 'M&M''s Peanut', 10, 27, true, '01-04-2022 16:12:25', '', 'FC0004'),
+    ('F0028', 'snickers.png', 'Snickers', 4, 6, true, '01-04-2022 16:12:44', '', 'FC0004'),
+    ('F0029', 'kitkat.png', 'KitKat', 3, 29, true, '01-04-2022 16:13:20', '', 'FC0004');
+
+INSERT INTO FnbOrder
+VALUES
+    ('FO0001', '01-04-2022 21:34:00', null, null, null, 'B0001'),
+    ('FO0002', '02-04-2022 14:51:19', null, null, null, 'B0005'),
+    ('FO0003', '03-04-2022 14:52:04', null, null, null, 'B0008'),
+    ('FO0004', '03-04-2022 14:52:19', null, null, null, 'B0009'),
+    ('FO0005', '04-04-2022 14:52:43', null, null, null, 'B0010'),
+    ('FO0006', '05-04-2022 15:05:35', '15 Medan Mahsuri I, 11950 Bayan Baru, Pulau Pinang', '05-04-2022 Now (30 - 45 mins)', 'Delivered', 'B0011'),
+    ('FO0007', '05-04-2022 15:05:42', '59K Jalan Mount Erskine, 10470 Tanjung Tokong, Pulau Pinang', '05-04-2022 07:00 PM', 'Delivered', 'B0012'),
+    ('FO0008', '06-04-2022 15:05:51', '31, Taman Selamat Solok Air Rajah, 10350 Georgetown, Pulau Pinang', '06-04-2022 Now (30 - 45 mins)', 'Delivered', 'B0013'),
+    ('FO0009', '06-04-2022 15:06:09', '27, Jalan Midlands, 10250 Georgetown, Pulau Pinang', '06-04-2022 Now (30 - 45 mins)', 'Delivered', 'B0014'),
+    ('FO0010', '06-04-2022 15:06:18', '3A, Lorong Delima 11, Island Glades, 11700 Gelugor, Pulau Pinang', '06-04-2022 Now (30 - 45 mins)', 'Delivered', 'B0015'),
+    ('FO0011', '07-04-2022 15:06:32', '2 Lintang Lumba Kuda 1, Desa Scotland, 11400 Georgetown, Pulau Pinang', '07-04-2022 Now (30 - 45 mins)', 'Delivered', 'B0016'),
+    ('FO0012', '07-04-2022 15:06:39', 'N-Park C-3-3, Jalan Batu Uban, 11700 Gelugor, Pulau Pinang', '07-04-2022 08:00 PM', 'Delivered', 'B0017');
+
+INSERT INTO FnbOrderLine
+VALUES
+    ('FOL0001', 2, 'F0009', 'FO0001'),
+    ('FOL0002', 2, 'F0001', 'FO0001'),
+    ('FOL0003', 2, 'F0029', 'FO0001'),
+    ('FOL0004', 2, 'F0004', 'FO0002'),
+    ('FOL0005', 2, 'F0013', 'FO0002'),
+    ('FOL0006', 2, 'F0024', 'FO0002'),
+    ('FOL0007', 1, 'F0003', 'FO0003'),
+    ('FOL0008', 1, 'F0007', 'FO0003'),
+    ('FOL0009', 1, 'F0022', 'FO0003'),
+    ('FOL0010', 1, 'F0005', 'FO0004'),
+    ('FOL0011', 2, 'F0008', 'FO0004'),
+    ('FOL0012', 2, 'F0025', 'FO0004'),
+    ('FOL0013', 2, 'F0005', 'FO0005'),
+    ('FOL0014', 1, 'F0016', 'FO0007'),
+    ('FOL0015', 2, 'F0018', 'FO0007'),
+    ('FOL0016', 2, 'F0026', 'FO0007'),
+    ('FOL0017', 1, 'F0016', 'FO0008'),
+    ('FOL0018', 2, 'F0001', 'FO0009'),
+    ('FOL0019', 1, 'F0007', 'FO0009'),
+    ('FOL0020', 1, 'F0024', 'FO0009'),
+    ('FOL0021', 2, 'F0003', 'FO0010'),
+    ('FOL0022', 1, 'F0019', 'FO0010'),
+    ('FOL0023', 1, 'F0003', 'FO0011'),
+    ('FOL0024', 1, 'F0008', 'FO0011'),
+    ('FOL0025', 1, 'F0027', 'FO0011'),
+    ('FOL0026', 2, 'F0003', 'FO0012'),
+    ('FOL0027', 1, 'F0009', 'FO0012'),
+    ('FOL0028', 2, 'F0028', 'FO0012');
+
+INSERT INTO SEATTYPE
+VALUES
+('ST0001', 'Twin Seat', 20.0),
+('ST0002', 'Single Seat', 14.0);
+
+INSERT INTO SEAT
+VALUES
+('C0001',	'D4',	'S0001',	'ST0002'),
+('C0002',	'D5',	'S0001',	'ST0002'),
+('C0003',	'D4',	'S0002',	'ST0002'),
+('C0004',	'D5',	'S0002',	'ST0002'),
+('C0005',	'F4',	'S0003',	'ST0002'),
+('C0006',	'F5',	'S0003',	'ST0002'),
+('C0007',	'S5',	'S0003',	'ST0001'),
+('C0008',	'S6',	'S0003',	'ST0001'),
+('C0009',	'Q6',	'S0005',	'ST0002'),
+('C0010',	'S5',	'S0005',	'ST0001'),
+('C0011',	'S6',	'S0005',	'ST0001'),
+('C0012',	'D4',	'S0009',	'ST0002'),
+('C0013',	'D5',	'S0009',	'ST0002'),
+('C0014',	'D6',	'S0009',	'ST0002'),
+('C0015',	'D7',	'S0009',	'ST0002'),
+('C0016',	'J3',	'S0011',	'ST0002'),
+('C0017',	'J4',	'S0011',	'ST0002'),
+('C0018',	'K5',	'S0011',	'ST0001'),
+('C0019',	'K6',	'S0011',	'ST0001'),
+('C0020',	'K5',	'S0012',	'ST0001'),
+('C0021',	'K6',	'S0012',	'ST0001'),
+('C0022',	'J4',	'S0017',	'ST0002'),
+('C0023',	'K5',	'S0017',	'ST0001'),
+('C0024',	'K6',	'S0017',	'ST0001'),
+('C0025',	'K5',	'S0018',	'ST0001'),
+('C0026',	'K6',	'S0018',	'ST0001'),
+('C0027',	'I5',	'S0019',	'ST0002'),
+('C0028',	'I6',	'S0019',	'ST0002'),
+('C0029',	'I4',	'S0024',	'ST0002'),
+('C0030',	'I5',	'S0024',	'ST0002'),
+('C0031',	'Q4',	'S0024',	'ST0002'),
+('C0032',	'Q5',	'S0024',	'ST0002'),
+('C0033',	'S3',	'S0024',	'ST0001'),
+('C0034',	'S4',	'S0024',	'ST0001'),
+('C0035',	'S5',	'S0024',	'ST0001'),
+('C0036',	'S6',	'S0024',	'ST0001'),
+('C0037',	'S7',	'S0024',	'ST0001'),
+('C0038',	'S8',	'S0024',	'ST0001'),
+('C0039',	'Q6',	'S0025',	'ST0002'),
+('C0040',	'Q7',	'S0025',	'ST0002'),
+('C0041',	'R3',	'S0025',	'ST0002'),
+('C0042',	'S7',	'S0025',	'ST0001'),
+('C0043',	'S8',	'S0025',	'ST0001'),
+('C0044',	'N6',	'S0025',	'ST0002'),
+('C0045',	'N7',	'S0025',	'ST0002'),
+('C0046',	'N8',	'S0025',	'ST0002'),
+('C0047',	'N9',	'S0025',	'ST0002'),
+('C0048',	'A7',	'S0007',	'ST0002'),
+('C0049',	'A8',	'S0007',	'ST0002');
+
+INSERT INTO TICKETTYPE
+VALUES
+('TT0001', 'Adult',	0.0),
+('TT0002', 'Children',	0.5),
+('TT0003', 'OKU',	0.5),
+('TT0004', 'Student',	0.2),
+('TT0008', 'Twin Seat',0.0);
+
+INSERT INTO TICKET
+VALUES
+('T0001',	'C0001',	'TT0001',	'B0001'),
+('T0002',	'C0002',	'TT0002',	'B0001'),
+('T0012',	'C0012',	'TT0001',	'B0005'),
+('T0013',	'C0013',	'TT0002',	'B0005'),
+('T0014',	'C0014',	'TT0003',	'B0005'),
+('T0015',	'C0015',	'TT0003',	'B0005'),
+('T0016',	'C0016',	'TT0004',	'B0006'),
+('T0017',	'C0017',	'TT0004',	'B0006'),
+('T0018',	'C0018',	'TT0008',	'B0006'),
+('T0019',	'C0019',	'TT0008',	'B0006'),
+('T0020',	'C0020',	'TT0008',	'B0007'),
+('T0021',	'C0021',	'TT0008',	'B0007'),
+('T0022',	'C0022',	'TT0001',	'B0008'),
+('T0023',	'C0023',	'TT0008',	'B0008'),
+('T0024',	'C0024',	'TT0008',	'B0008'),
+('T0025',	'C0025',	'TT0008',	'B0009'),
+('T0026',	'C0026',	'TT0008',	'B0009'),
+('T0027',	'C0027',	'TT0001',	'B0010'),
+('T0028',	'C0028',	'TT0001',	'B0010');
+
+INSERT INTO Question
+VALUES
+    ('Q0001', 'How satisfied are you with the usability of the website?', true, '01-04-2022 15:33:40', ''),
+    ('Q0002', 'How satisfied are you with the online payment process?', true, '01-04-2022 15:33:46', ''),
+    ('Q0003', 'How satisfied are you with CC Cinema''s overall performance?', true, '01-04-2022 15:33:50', ''),
+    ('Q0004', 'How likely is it that you would recommend us to a friend?', true, '01-04-2022 15:33:56', ''),
+    ('Q0005', 'How easy is it to understand the information on our website?', true, '01-04-2022 15:34:01', ''),
+    ('Q0006', 'How affordable was the movie ticket or F&B price?', true, '01-04-2022 15:34:05', ''),
+    ('Q0007', 'How likely do you think CC Cinema need to advertise more?', true, '01-04-2022 15:34:10', ''),
+    ('Q0008', 'How likely the rewards make you visit CC Cinema?', true, '01-04-2022 15:34:16', ''),
+    ('Q0009', 'How do you think the price you pay for is worth it?', true, '01-04-2022 15:34:22', '');
+
+INSERT INTO FeedbackForm 
+VALUES
+    ('FF0001', '2022-04-01 14:58:42', 'B0003'),
+    ('FF0002', '2022-04-02 14:56:16', 'B0004'),
+    ('FF0003', '2022-04-02 14:59:26', 'B0005'),
+    ('FF0004', '2022-04-02 14:57:59', 'B0006'),
+    ('FF0005', '2022-04-03 14:55:51', 'B0008'),
+    ('FF0006', '2022-04-03 14:57:24', 'B0009'),
+    ('FF0007', '2022-04-05 15:06:53', 'B0015'),
+    ('FF0008', '2022-04-07 15:09:23', 'B0017');
+
+INSERT INTO FeedbackResponse 
+VALUES
+    ('FR0001', 'Q0001', 'FF0001', 2),
+    ('FR0002', 'Q0002', 'FF0001', 5),
+    ('FR0003', 'Q0003', 'FF0001', 2),
+    ('FR0004', 'Q0004', 'FF0001', 4),
+    ('FR0005', 'Q0005', 'FF0001', 1),
+    ('FR0006', 'Q0006', 'FF0001', 1),
+    ('FR0007', 'Q0007', 'FF0001', 3),
+    ('FR0008', 'Q0008', 'FF0001', 1),
+    ('FR0009', 'Q0009', 'FF0001', 5),
+    ('FR0010', 'Q0001', 'FF0002', 4),
+    ('FR0011', 'Q0002', 'FF0002', 5),
+    ('FR0012', 'Q0003', 'FF0002', 5),
+    ('FR0013', 'Q0004', 'FF0002', 1),
+    ('FR0014', 'Q0005', 'FF0002', 5),
+    ('FR0015', 'Q0006', 'FF0002', 2),
+    ('FR0016', 'Q0007', 'FF0002', 4),
+    ('FR0017', 'Q0008', 'FF0002', 1),
+    ('FR0018', 'Q0009', 'FF0002', 5),
+    ('FR0019', 'Q0001', 'FF0003', 2),
+    ('FR0020', 'Q0002', 'FF0003', 2),
+    ('FR0021', 'Q0003', 'FF0003', 4),
+    ('FR0022', 'Q0004', 'FF0003', 4),
+    ('FR0023', 'Q0005', 'FF0003', 4),
+    ('FR0024', 'Q0006', 'FF0003', 2),
+    ('FR0025', 'Q0007', 'FF0003', 5),
+    ('FR0026', 'Q0008', 'FF0003', 5),
+    ('FR0027', 'Q0009', 'FF0003', 3),
+    ('FR0028', 'Q0001', 'FF0004', 2),
+    ('FR0029', 'Q0002', 'FF0004', 5),
+    ('FR0030', 'Q0003', 'FF0004', 4),
+    ('FR0031', 'Q0004', 'FF0004', 3),
+    ('FR0032', 'Q0005', 'FF0004', 5),
+    ('FR0033', 'Q0006', 'FF0004', 4),
+    ('FR0034', 'Q0007', 'FF0004', 4),
+    ('FR0035', 'Q0008', 'FF0004', 4),
+    ('FR0036', 'Q0009', 'FF0004', 2),
+    ('FR0037', 'Q0001', 'FF0005', 5),
+    ('FR0038', 'Q0002', 'FF0005', 5),
+    ('FR0039', 'Q0003', 'FF0005', 1),
+    ('FR0040', 'Q0004', 'FF0005', 5),
+    ('FR0041', 'Q0005', 'FF0005', 4),
+    ('FR0042', 'Q0006', 'FF0005', 5),
+    ('FR0043', 'Q0007', 'FF0005', 3),
+    ('FR0044', 'Q0008', 'FF0005', 4),
+    ('FR0045', 'Q0009', 'FF0005', 5),
+    ('FR0046', 'Q0001', 'FF0006', 1),
+    ('FR0047', 'Q0002', 'FF0006', 3),
+    ('FR0048', 'Q0003', 'FF0006', 3),
+    ('FR0049', 'Q0004', 'FF0006', 4),
+    ('FR0050', 'Q0005', 'FF0006', 5),
+    ('FR0051', 'Q0006', 'FF0006', 1),
+    ('FR0052', 'Q0007', 'FF0006', 4),
+    ('FR0053', 'Q0008', 'FF0006', 4),
+    ('FR0054', 'Q0009', 'FF0006', 2),
+    ('FR0055', 'Q0001', 'FF0007', 1),
+    ('FR0056', 'Q0002', 'FF0007', 3),
+    ('FR0057', 'Q0003', 'FF0007', 2),
+    ('FR0058', 'Q0004', 'FF0007', 3),
+    ('FR0059', 'Q0005', 'FF0007', 2),
+    ('FR0060', 'Q0006', 'FF0007', 2),
+    ('FR0061', 'Q0007', 'FF0007', 4),
+    ('FR0062', 'Q0008', 'FF0007', 3),
+    ('FR0063', 'Q0009', 'FF0007', 2),
+    ('FR0064', 'Q0001', 'FF0008', 3),
+    ('FR0065', 'Q0002', 'FF0008', 3),
+    ('FR0066', 'Q0003', 'FF0008', 2),
+    ('FR0067', 'Q0004', 'FF0008', 3),
+    ('FR0068', 'Q0005', 'FF0008', 5),
+    ('FR0069', 'Q0006', 'FF0008', 2),
+    ('FR0070', 'Q0007', 'FF0008', 3),
+    ('FR0071', 'Q0008', 'FF0008', 3),
+    ('FR0072', 'Q0009', 'FF0008', 1);
+
+INSERT INTO FavItem
+VALUES
+    ('FI0001', 'F0006', 'siti0816@gmail.com'),
+    ('FI0002', 'F0014', 'siti0816@gmail.com'),
+    ('FI0003', 'F0018', 'siti0816@gmail.com'),
+    ('FI0004', 'F0003', 'farah0125@gmail.com'),
+    ('FI0005', 'F0002', 'azizul0327@gmail.com'),
+    ('FI0006', 'F0013', 'azizul0327@gmail.com'),
+    ('FI0007', 'F0019', 'azizul0327@gmail.com'),
+    ('FI0008', 'F0025', 'azizul0327@gmail.com'),
+    ('FI0009', 'F0003', 'azizul0327@gmail.com'),
+    ('FI0010', 'F0004', 'kerming0221@gmail.com'),
+    ('FI0011', 'F0001', 'yongwei0213@gmail.com'),
+    ('FI0012', 'F0011', 'yongwei0213@gmail.com'),
+    ('FI0013', 'F0016', 'yongwei0213@gmail.com'),
+    ('FI0014', 'F0029', 'yongwei0213@gmail.com'),
+    ('FI0015', 'F0005', 'angelyn1119@gmail.com'),
+    ('FI0016', 'F0014', 'angelyn1119@gmail.com'),
+    ('FI0017', 'F0003', 'weiwei0925@gmail.com'),
+    ('FI0018', 'F0019', 'weiwei0925@gmail.com'),
+    ('FI0019', 'F0026', 'weiwei0925@gmail.com'),
+    ('FI0020', 'F0002', 'shinyii0102@gmail.com'),
+    ('FI0021', 'F0008', 'shinyii0102@gmail.com'),
+    ('FI0022', 'F0020', 'shinyii0102@gmail.com'),
+    ('FI0023', 'F0027', 'shinyii0102@gmail.com'),
+    ('FI0024', 'F0023', 'shinyii0102@gmail.com'),
+    ('FI0025', 'F0004', 'mike0220@gmail.com'),
+    ('FI0026', 'F0013', 'mike0220@gmail.com'),
+    ('FI0027', 'F0018', 'mike0220@gmail.com'),
+    ('FI0028', 'F0001', 'syafiq0812@gmail.com'),
+    ('FI0029', 'F0010', 'syafiq0812@gmail.com'),
+    ('FI0030', 'F0020', 'syafiq0812@gmail.com'),
+    ('FI0031', 'F0026', 'syafiq0812@gmail.com');
