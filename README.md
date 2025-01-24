@@ -5,7 +5,7 @@ GlassFish Server 6
 
 # Installation 
 1. Download the folder
-2. Add JAR (activation-1.1.jar)
+2. Add JAR `activation-1.1.jar`
 3. Create database 
    	Database Name: cinemadb
 	User Name: nbuser
