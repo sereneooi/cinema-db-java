@@ -95,20 +95,18 @@ GlassFish Server 6
 |                                        | Staff  | View ALL         |
 | Food & Beverages Order Delivery        | Admin, Staff | View ALL         |
 |                                        |        | Update           |
-| Promotion                              | Admin,Staff | Add              |
+| Promotion                              | Admin, Staff | Add              |
 |                                        |        | Retrieve         |
 |                                        |        | Update           |
 |                                        |        | Update Status    |
-| Payment                                | Admin, | View ALL         |
-|                                        | Staff  |                  |
+| Payment                                | Admin, Staff | View ALL         |
 | Question                               | Admin  | Add              |
 |                                        |        | View ALL         |
 |                                        |        | Update           |
 |                                        |        | Delete           |
 |                                        | Staff  | Add              |
 |                                        |        | View ALL         |
-| Top Favourite Food & Beverages Report, Service Rating Report   | Admin, |                  |
-|                 | Staff  | View             |
+| Top Favourite Food & Beverages Report, Service Rating Report   | Admin, Staff| View                 |
 | Daily Sales Report, Top List of Highest Grossing Report                    | Admin  | View             |
 |                                        | Staff  | -                |
 	
