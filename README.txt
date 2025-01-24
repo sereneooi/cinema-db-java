@@ -1,6 +1,4 @@
--------
-Version
--------
+# Version
 Apache NetBeans IDE 12.6
 JDK 1.8
 GlassFish Server 6
